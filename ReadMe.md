@@ -14,7 +14,7 @@ so *dir* will be *<folder_path…\Z>*. In my case, *dir* input was *D:\ASU\Cours
 The System should be installed with Python 3.7.7.
 
 *To Run the System:*
-1.	Open the folder Code in the command prompt
+1.	Open the folder in the command prompt
 2.	Create virtual environment folder: python -m venv venv
 3.	Activate the virtual environment: venv\Scripts\activate
 4.	Install all the packages required: pip install -r requirements.txt
