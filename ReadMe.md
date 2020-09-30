@@ -19,5 +19,5 @@ The System should be installed with Python 3.7.7.
 3.	Create virtual environment folder: python -m venv venv
 4.	Activate the virtual environment: venv\Scripts\activate
 5.	Install all the packages required: pip install -r requirements.txt
-6.	Run the program file: python Phase1.py
+6.	Run the program file: python Phase2.py
 7.	Follow along the interface. 
