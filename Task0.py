@@ -59,63 +59,59 @@ def normalizeSensorWise(df):
     return df_norm
 
 
-def write_quantized_data(data, directory, gesture, window_length, shift_length):
+def write_quantized_data(avg_std_df, quantized_data, directory, gesture, window_length, shift_length):
     file_name = gesture.split("\\")[-1].split(".")[0]
+    folder_name = directory.split("\\")[-1]
     new_file = directory + "/" + file_name + ".wrd"
     vector = list()
     with open(new_file, 'w', newline="") as x:
-        for index, row in data.iterrows():
-            for i in range(0, data.shape[1], shift_length):
-                if i + window_length < data.shape[1]:
+        for index, row in quantized_data.iterrows():
+            for i in range(0, quantized_data.shape[1], shift_length):
+                if i + window_length < quantized_data.shape[1]:
                     win = row[i:i + window_length].tolist()
-                    pair = [file_name, index + 1, i]
+                    pair = [folder_name, file_name, index + 1, i, avg_std_df.iloc[index]['avg'],
+                            avg_std_df.iloc[index]['std'], np.mean(win)]
                     vector.append(pair + win)
         csv.writer(x, delimiter=' ').writerows(vector)
 
-def Avg_Std(df):
 
-    avg=df.apply(np.mean,axis=0)
-
-    std=df.apply(np.std,axis=0)
-
-    return avg,std
+def avg_std(df):
+    avg = df.apply(np.mean, axis=0)
+    std = df.apply(np.std, axis=0)
+    return avg, std
 
 
-def read_gestures_from_csv(all_files, directory, resolution, shift_length, window_length):
-    print("Building Gaussian Bands...")
-    bands = gaussian_bands(resolution)
-    print('Reading data from the given folder and quantizing...')
-    avg_df=pd.DataFrame()
-    std_df=pd.DataFrame()
+def calculate_avg_std_sensor_wise(df):
+    tran_df = pd.DataFrame(df.T)
+    avg_temp, std_temp = avg_std(tran_df)
+    avg_amplitude = avg_temp.to_frame('avg')
+    std_deviation = std_temp.to_frame('std')
+    amp_std = pd.concat([avg_amplitude, std_deviation], axis=1)
+    return amp_std
+
+
+def read_gestures_from_csv(all_files, directory, resolution, shift_length, window_length, bands):
     for filename in all_files:
         df = pd.read_csv(filename, header=None)
         column_names = [x for x in range(1, df.shape[1])]
         df = pd.DataFrame(df, columns=column_names)
-
-        tran_df=pd.DataFrame(df.T)
-        avg_temp,std_temp=Avg_Std(tran_df)
-        avg_df=pd.concat([avg_df,avg_temp],axis=1)
-        std_df=pd.concat([std_df,std_temp],axis=1)
-
+        avg_std_df = calculate_avg_std_sensor_wise(df)
         df_norm = normalizeSensorWise(df)
         quantized_data = quantization(df_norm, bands)
-        write_quantized_data(quantized_data, directory, filename, window_length, shift_length)
-
-    column_names = [x for x in range(0, avg_df.shape[1])]
-    avg_df.columns=column_names
-    std_df.columns=column_names
-
-
+        write_quantized_data(avg_std_df, quantized_data, directory, filename, window_length, shift_length)
 
 
 def task0a(folder_directory, window_length, shift_length, resolution):
     dirs = [d for d in os.listdir(folder_directory) if os.path.isdir(os.path.join(folder_directory, d))]
+    print("Building Gaussian Bands...")
+    bands = gaussian_bands(resolution)
     for folder in dirs:
-        print("   Processing for Folder ", folder, "...")
+        print("Processing for Folder ", folder, "...")
         all_files = glob.glob(folder_directory + '\\' + folder + "/*.csv")
         file_directory = folder_directory + '\\' + folder
-        read_gestures_from_csv(all_files, file_directory, resolution, shift_length, window_length)
-    print("     ****Created .wrd files for all the gestures.****")
+        read_gestures_from_csv(all_files, file_directory, resolution, shift_length, window_length, bands)
+        print("Created .wrd files for Folder ", folder)
+    print("    ****Created dictionary for all the folders****")
 
 
 def get_all_words_from_directory(directory):
@@ -206,10 +202,7 @@ def convert_vector_to_string(data):
 def task0b(directory):
     all_words = get_all_words_from_directory(directory)
     print("Building all words dictionary")
-
-
     data_dict, data_df = create_word_dictionary(directory, all_words)
-    print("Performing TF, TF-IDF, TF-IDF2 calculations")
+    print("Performing TF, TF-IDF calculations")
     calculations(directory, data_dict, data_df, all_words)
     print("     ****Created vectors.txt file****")
-
