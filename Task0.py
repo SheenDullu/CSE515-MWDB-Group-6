@@ -72,18 +72,40 @@ def write_quantized_data(data, directory, gesture, window_length, shift_length):
                     vector.append(pair + win)
         csv.writer(x, delimiter=' ').writerows(vector)
 
+def Avg_Std(df):
+
+    avg=df.apply(np.mean,axis=0)
+
+    std=df.apply(np.std,axis=0)
+
+    return avg,std
+
 
 def read_gestures_from_csv(all_files, directory, resolution, shift_length, window_length):
     print("Building Gaussian Bands...")
     bands = gaussian_bands(resolution)
     print('Reading data from the given folder and quantizing...')
+    avg_df=pd.DataFrame()
+    std_df=pd.DataFrame()
     for filename in all_files:
         df = pd.read_csv(filename, header=None)
         column_names = [x for x in range(1, df.shape[1])]
         df = pd.DataFrame(df, columns=column_names)
+
+        tran_df=pd.DataFrame(df.T)
+        avg_temp,std_temp=Avg_Std(tran_df)
+        avg_df=pd.concat([avg_df,avg_temp],axis=1)
+        std_df=pd.concat([std_df,std_temp],axis=1)
+
         df_norm = normalizeSensorWise(df)
         quantized_data = quantization(df_norm, bands)
         write_quantized_data(quantized_data, directory, filename, window_length, shift_length)
+
+    column_names = [x for x in range(0, avg_df.shape[1])]
+    avg_df.columns=column_names
+    std_df.columns=column_names
+
+
 
 
 def task0a(folder_directory, window_length, shift_length, resolution):
@@ -184,7 +206,10 @@ def convert_vector_to_string(data):
 def task0b(directory):
     all_words = get_all_words_from_directory(directory)
     print("Building all words dictionary")
+
+
     data_dict, data_df = create_word_dictionary(directory, all_words)
     print("Performing TF, TF-IDF, TF-IDF2 calculations")
     calculations(directory, data_dict, data_df, all_words)
     print("     ****Created vectors.txt file****")
+
