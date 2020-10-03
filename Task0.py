@@ -102,7 +102,7 @@ def read_gestures_from_csv(all_files, directory, resolution, shift_length, windo
 
 
 def task0a(folder_directory, window_length, shift_length, resolution):
-    dirs = [d for d in os.listdir(folder_directory) if os.path.isdir(os.path.join(folder_directory, d))]
+    dirs = get_all_sub_folders(folder_directory)
     print("Building Gaussian Bands...")
     bands = gaussian_bands(resolution)
     for folder in dirs:
@@ -112,6 +112,10 @@ def task0a(folder_directory, window_length, shift_length, resolution):
         read_gestures_from_csv(all_files, file_directory, resolution, shift_length, window_length, bands)
         print("Created .wrd files for Folder ", folder)
     print("    ****Created dictionary for all the folders****")
+
+
+def get_all_sub_folders(folder_directory):
+    return [d for d in os.listdir(folder_directory) if os.path.isdir(os.path.join(folder_directory, d))]
 
 
 def get_all_words_from_directory(directory):
