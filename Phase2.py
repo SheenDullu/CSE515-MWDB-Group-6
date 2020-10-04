@@ -1,5 +1,5 @@
-from Task0 import task0a, task0b
-
+from Task0 import task0a
+from Task0b import Task0b
 
 def main():
     while True:
@@ -16,7 +16,7 @@ def main():
             print("########## Completed Task 1 ##########")
         if task == '0b':
             directory = input("Input Directory path of the gesture folders:\n")
-            task0b(directory)
+            Task0b(directory)
             print("########## Completed Task 2 ##########")
 
 

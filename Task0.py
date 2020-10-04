@@ -208,5 +208,4 @@ def task0b(directory):
     print("Building all words dictionary")
     data_dict, data_df = create_word_dictionary(directory, all_words)
     print("Performing TF, TF-IDF calculations")
-    calculations(directory, data_dict, data_df, all_words)
-    print("     ****Created vectors.txt file****")
+    calculations(directory, data_dict, data_df, all_word)
