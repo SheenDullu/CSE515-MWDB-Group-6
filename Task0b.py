@@ -6,8 +6,6 @@ import sys
 import glob
 
 global num_files
-num_files=66
-
 
 def find_wrd(loc):
 
@@ -17,12 +15,19 @@ def find_wrd(loc):
             all_files = glob.glob(os.path.join(loc,dir) + "/*.wrd")
             for file in all_files:
 
-                data = pd.read_csv(os.path.join(loc,dir,file), delimiter=" ", header=None, names=['component','f', 'sensor_id', 'time','avg','std','avg_quant', 'word1','word2','word3'],
-                                   dtype=str)
+                data = pd.read_csv(os.path.join(loc,dir,file), delimiter=" ", header=None, dtype=str)
                 f_wrd=pd.concat([f_wrd,data],axis=0)
 
-    f_wrd['word']=f_wrd.apply(lambda x: ''.join((x['word1'], x['word2'], x['word3'])), axis=1)
-    f_wrd=f_wrd.drop(['word1','word2','word3'],axis=1)
+    names=['component','f', 'sensor_id', 'time','avg','std','avg_quant','word']
+
+
+    word=(f_wrd.apply(lambda x: ''.join(x[7:]),axis=1))
+    # f_wrd['word']=f_wrd.apply(lambda x: str(''.join((x['word1'], x['word2'], x['word3']))), axis=1)
+    # f_wrd=f_wrd.drop(['word1','word2','word3'],axis=1)
+    f_wrd=f_wrd.drop(f_wrd.columns[7:],axis=1)
+    f_wrd=pd.concat([f_wrd,word],axis=1)
+    f_wrd.columns=names
+
     return f_wrd
 
 def tf_f(data):
@@ -36,7 +41,7 @@ def tf_f(data):
 
 
 def idf_f(data):
-    num_files = 60
+    num_files = int(data['f'].max())
     # Check the number of files the word exists in w.r.t. sensor's time series
     count = data.groupby(['component','sensor_id', 'word', 'f']).count().reset_index()
     count['freq'] = count['time'].apply(lambda x: 1 if x > 0 else 0)
@@ -79,7 +84,7 @@ def vectors(input):
 
 
 
-def rearrange(zero, alg):
+def rearrange(zero, alg,num_files):
     result = np.array([])
 
     # rearrange df to calculate for each algorithm
@@ -97,8 +102,10 @@ def rearrange(zero, alg):
 
 def align(vector):
     # Partition based on file and outer join to standardise vector for each file
-    comp= ['W','X','Y','Z']
+    comp= vector["component"].unique()
+
     flag=1
+    num_files=int(vector['f'].max())
 
     for c in comp:
         vec=vector[vector["component"]==c].drop(['component'],axis=1)
@@ -119,9 +126,8 @@ def align(vector):
         zero = zero.fillna(-1)
         zero = zero.sort_values('word')
 
-
-        tf = rearrange(zero, 'tf')
-        idf = rearrange(zero, 'tf-idf')
+        tf = rearrange(zero, 'tf',num_files)
+        idf = rearrange(zero, 'tf-idf',num_files)
         if(flag):
             ulti_tf=tf
             ulti_idf=idf
@@ -141,6 +147,8 @@ def align(vector):
 
 def write(vec,file,loc):
     vec.to_csv(os.path.join('\\'.join(loc.split('\\')[:-1]),file), index=False,header=None)
+
+
 
 
 def Task0b(loc):
@@ -165,6 +173,11 @@ def Task0b(loc):
 
     write(pd.DataFrame(tf),file_names[0],loc)
     write(pd.DataFrame(tf_idf), file_names[1],loc)
+
+
+if __name__=='__main__':
+
+    Task0b(r"C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\data")
 
 
 
