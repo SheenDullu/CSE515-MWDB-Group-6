@@ -84,12 +84,12 @@ def vectors(input):
 
 
 
-def rearrange(zero, alg,num_files):
+def rearrange(zero, alg,num_files,comp):
     result = np.array([])
 
     # rearrange df to calculate for each algorithm
     for f in range(1, num_files + 1):
-        temp = zero.filter(regex='^' + alg + '_' + str(f) + '_', axis=1)
+        temp = zero.filter(regex='^' + alg+ '_'+ '[X,Y,W,Z]'+ '_' + str(f) + '_', axis=1)
         temp_arr = temp.to_numpy()
         temp_arr = temp_arr.reshape((temp_arr.shape[0] * temp_arr.shape[1], 1), order='F')
 
@@ -105,29 +105,40 @@ def align(vector):
     comp= vector["component"].unique()
 
     flag=1
-    num_files=int(vector['f'].max())
+    num_files=vector['f'].astype(int).max()
+
+    comp_df=vector[vector["component"]==comp[0]].drop(["component"],axis=1)
+
+    for c in range(1,len(comp)):
+        temp=vector[vector["component"]==c].drop(['component'],axis=1)
+        comp_df=pd.merge(comp_df,temp, on=['f','sensor_id', 'word'], how='outer', suffixes=('_' + str(comp[c - 1]), '_' + str(comp[c])))
+
+    df = comp_df[comp_df['f'] == '1'].drop(['f'], axis=1)
+
+
+    for f in range(2, num_files + 1):
+        temp = comp_df[comp_df['f'] == str(f)].drop(['f'], axis=1)
+        df = pd.merge(df, temp, on=['sensor_id', 'word'], how='outer', suffixes=('_' + str(f - 1), '_' + str(f)))
+    df = df.fillna(-1)
+
+    # Partition file based standardised vector based on sensor and outer join to standardise every sensor vector
+    zero = df[df['sensor_id'] == '0'].drop(['sensor_id'], axis=1)
+
+    for i in range(1, 20):
+        temp = df[df['sensor_id'] == str(i)].drop(['sensor_id'], axis=1)
+        zero = pd.merge(zero, temp, on=['word'], how='outer', suffixes=('_' + str(i - 1), '_' + str(i)))
+
+
+    zero = zero.fillna(-1)
+    zero = zero.sort_values('word')
 
     for c in comp:
-        vec=vector[vector["component"]==c].drop(['component'],axis=1)
-        df = vec[vec['f'] == '1'].drop(['f'], axis=1)
+        comp_alg=zero.filter(regex='_' + str(c) + '_' , axis=1)
 
-        for f in range(2, num_files + 1):
-            temp = vec[vec['f'] == str(f)].drop(['f'], axis=1)
-            df = pd.merge(df, temp, on=['sensor_id', 'word'], how='outer', suffixes=('_' + str(f - 1), '_' + str(f)))
-        df = df.fillna(-1)
 
-        # Partition file based standardised vector based on sensor and outer join to standardise every sensor vector
-        zero = df[df['sensor_id'] == '0'].drop(['sensor_id'], axis=1)
+        tf = rearrange(comp_alg, 'tf',num_files,comp)
+        idf = rearrange(comp_alg, 'tf-idf',num_files,comp)
 
-        for i in range(1, 20):
-            temp = df[df['sensor_id'] == str(i)].drop(['sensor_id'], axis=1)
-            zero = pd.merge(zero, temp, on='word', how='outer', suffixes=('_' + str(i - 1), '_' + str(i)))
-
-        zero = zero.fillna(-1)
-        zero = zero.sort_values('word')
-
-        tf = rearrange(zero, 'tf',num_files)
-        idf = rearrange(zero, 'tf-idf',num_files)
         if(flag):
             ulti_tf=tf
             ulti_idf=idf
@@ -139,7 +150,7 @@ def align(vector):
 
 
 
-    return tf, idf
+    return ulti_tf, ulti_idf
 
 
 
