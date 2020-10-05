@@ -1,5 +1,6 @@
-from Task0 import task0a
+from Task0a import task0a
 from Task0b import Task0b
+
 
 def main():
     while True:
@@ -12,7 +13,7 @@ def main():
             # window_length = int(input("Enter window length(w): \n"))
             # shift_length = int(input("Enter shift length(s): \n"))
             # resolution = int(input("Enter resolution (r): \n"))
-            task0a("D:\ASU\Courses\MWDB\Project\Phase 2\Code\data", 3, 2, 3)
+            task0a("path to directory", 3, 2, 3)
             print("########## Completed Task 1 ##########")
         if task == '0b':
             directory = input("Input Directory path of the gesture folders:\n")
