@@ -10,23 +10,25 @@ global num_files
 def find_wrd(loc):
 
     f_wrd=pd.DataFrame()
-    for dir in os.listdir(loc):
-        if os.path.isdir(os.path.join(loc,dir)):
-            all_files = glob.glob(os.path.join(loc,dir) + "/*.wrd")
-            for file in all_files:
 
-                data = pd.read_csv(os.path.join(loc,dir,file), delimiter=" ", header=None, dtype=str)
-                f_wrd=pd.concat([f_wrd,data],axis=0)
+    all_files = glob.glob(os.path.join(loc) + "/*.wrd")
 
-    names=['component','f', 'sensor_id', 'time','avg','std','avg_quant','word']
+    names = ['component', 'sensor_id', 'word', 'time', 'avg', 'std', 'avg_quant']
+    for file in all_files:
+
+        data = pd.read_csv(file, delimiter=" ", header=None, dtype=str,names=names)
+        data['f']=file.split("\\")[-1].split(".")[0]
+        f_wrd=pd.concat([f_wrd,data],axis=0)
 
 
-    word=(f_wrd.apply(lambda x: ''.join(x[7:]),axis=1))
-    # f_wrd['word']=f_wrd.apply(lambda x: str(''.join((x['word1'], x['word2'], x['word3']))), axis=1)
-    # f_wrd=f_wrd.drop(['word1','word2','word3'],axis=1)
-    f_wrd=f_wrd.drop(f_wrd.columns[7:],axis=1)
-    f_wrd=pd.concat([f_wrd,word],axis=1)
-    f_wrd.columns=names
+
+
+    # word=(f_wrd.apply(lambda x: ''.join(x[7:]),axis=1))
+    # # f_wrd['word']=f_wrd.apply(lambda x: str(''.join((x['word1'], x['word2'], x['word3']))), axis=1)
+    # # f_wrd=f_wrd.drop(['word1','word2','word3'],axis=1)
+    # f_wrd=f_wrd.drop(f_wrd.columns[7:],axis=1)
+    # f_wrd=pd.concat([f_wrd,word],axis=1)
+    # f_wrd.columns=names
 
     return f_wrd
 
@@ -156,8 +158,21 @@ def align(vector):
 
 
 
-def write(vec,file,loc):
-    vec.to_csv(os.path.join('\\'.join(loc.split('\\')[:-1]),file), index=False,header=None)
+def write(vec,file,loc,file_num):
+
+    l=len(vec)
+    c=int(l/4)
+    f=int(c/60)
+
+    for i,file_name in enumerate(file_num):
+        for comp in range(4):
+            temp=vec[(comp*c)+(i*f):(comp*c)+((i+1)*f)]
+            if comp==0 :
+                result=temp
+            else:
+                result = np.concatenate((result, temp), axis=0)
+        result_df=pd.DataFrame(result)
+        result_df.to_csv(os.path.join(loc,file+str(file_name)+".txt"), index=False,header=None)
 
 
 
@@ -166,8 +181,7 @@ def Task0b(loc):
 
     data=find_wrd(loc)
 
-
-
+    file_num=data['f'].astype(int).unique()
     print("Data Loaded")
 
     vec = vectors(data)
@@ -180,10 +194,11 @@ def Task0b(loc):
     print("Vectors Standardized")
     print("writing to file...")
 
-    file_names=["tf_vectors_fi.txt","tf_idf_vectors_fi.txt"]
+    file_names=["tf_vectors_f","tf_idf_vectors_f"]
 
-    write(pd.DataFrame(tf),file_names[0],loc)
-    write(pd.DataFrame(tf_idf), file_names[1],loc)
+
+    write(pd.DataFrame(tf),file_names[0],loc,file_num)
+    write(pd.DataFrame(tf_idf), file_names[1],loc,file_num)
 
 
 if __name__=='__main__':
