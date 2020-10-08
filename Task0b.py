@@ -194,7 +194,7 @@ def Task0b(loc):
     print("Vectors Standardized")
     print("writing to file...")
 
-    file_names=["tf_vectors_f","tf_idf_vectors_f"]
+    file_names=["tfvectors_","tf_idfvectors_"]
 
 
     write(pd.DataFrame(tf),file_names[0],loc,file_num)
