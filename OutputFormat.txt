@@ -8,8 +8,7 @@ Task 0b :
 format:
 A single array
 
-Divide the array into 4 equal parts to get the 4 individual components
-Divide the individual component into 60 parts to get 60 files
+Divide the array into 4 equal parts to get the 4 individual components [W,X,Y,Z]
 Divide each file into 20 parts to get sensor information
 
 Each element in sensor information corresponds to the unique words in the dictionary in a sorted manner
