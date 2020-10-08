@@ -1,7 +1,7 @@
 Task 0a :
 
 format:
-Component File Sensor_id Time Average_Amp Std Average_Quantization Symbolic_Rep
+Component Sensor_id Symbolic_Rep Time Average_Amp Std Average_Quantization 
 
 Task 0b :
 
