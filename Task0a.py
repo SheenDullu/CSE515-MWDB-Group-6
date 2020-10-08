@@ -58,20 +58,18 @@ def normalizeSensorWise(df):
     return df_norm
 
 
-def write_quantized_data(avg_std_df, quantized_data, directory, gesture, window_length, shift_length):
-    file_name = gesture.split("\\")[-1].split(".")[0]
+def create_word_dictionary(avg_std_df, df, quantized_data, directory, window_length, shift_length):
     folder_name = directory.split("\\")[-1]
-    new_file = directory + "/" + file_name + ".wrd"
-    vector = list()
-    with open(new_file, 'w', newline="") as x:
-        for index, row in quantized_data.iterrows():
-            for i in range(0, quantized_data.shape[1], shift_length):
-                if i + window_length < quantized_data.shape[1]:
-                    win = row[i:i + window_length].tolist()
-                    pair = [folder_name, file_name, index + 1, i, avg_std_df.iloc[index]['avg'],
-                            avg_std_df.iloc[index]['std'], np.mean(win)]
-                    vector.append(pair + win)
-        csv.writer(x, delimiter=' ').writerows(vector)
+    word_list = list()
+    for index, row in quantized_data.iterrows():
+        for i in range(0, quantized_data.shape[1], shift_length):
+            if i + window_length < quantized_data.shape[1]:
+                avg_q = df.loc[index][i:i + window_length].tolist()
+                win = row[i:i + window_length].tolist()
+                pair = [folder_name, index + 1, i, avg_std_df.iloc[index]['avg'],
+                        avg_std_df.iloc[index]['std'], np.mean(avg_q)]
+                word_list.append(pair + win)
+    return word_list
 
 
 def avg_std(df):
@@ -89,15 +87,19 @@ def calculate_avg_std_sensor_wise(df):
     return amp_std
 
 
-def read_gestures_from_csv(all_files, directory, resolution, shift_length, window_length, bands):
-    for filename in all_files:
-        df = pd.read_csv(filename, header=None)
+def read_gestures_from_csv(all_files, directory, shift_length, window_length, bands, word_dict):
+    for file in all_files:
+        file_name = file.split("\\")[-1].split(".")[0]
+        if file_name not in word_dict.keys():
+            word_dict[file_name] = list()
+        df = pd.read_csv(file, header=None)
         column_names = [x for x in range(1, df.shape[1])]
         df = pd.DataFrame(df, columns=column_names)
         avg_std_df = calculate_avg_std_sensor_wise(df)
         df_norm = normalizeSensorWise(df)
-        quantized_data = quantization(df_norm, bands)
-        write_quantized_data(avg_std_df, quantized_data, directory, filename, window_length, shift_length)
+        quantized_data = quantization(df_norm.copy(), bands)
+        word_dict[file_name].extend(create_word_dictionary(avg_std_df, df_norm, quantized_data, directory,
+                                                           window_length, shift_length))
 
 
 def get_all_sub_folders(folder_directory):
@@ -108,10 +110,17 @@ def task0a(folder_directory, window_length, shift_length, resolution):
     dirs = get_all_sub_folders(folder_directory)
     print("Building Gaussian Bands...")
     bands = gaussian_bands(resolution)
+    print("Done!")
+    word_dict = dict()
     for folder in dirs:
         print("Processing for Folder ", folder, "...")
         all_files = glob.glob(folder_directory + '\\' + folder + "/*.csv")
         file_directory = folder_directory + '\\' + folder
-        read_gestures_from_csv(all_files, file_directory, resolution, shift_length, window_length, bands)
-        print("Created .wrd files for Folder ", folder)
-    print("    ****Created dictionary for all the folders****")
+        read_gestures_from_csv(all_files, file_directory, shift_length, window_length, bands, word_dict)
+        print("Done!")
+
+    for key, value in word_dict.items():
+        word_file = folder_directory + '\\' + str(key) + '.wrd'
+        with open(word_file, 'w', newline="") as f:
+            csv.writer(f, delimiter=' ').writerows(value)
+    print("    ****Created dictionaries(.wrd) for all the gesture files****")
