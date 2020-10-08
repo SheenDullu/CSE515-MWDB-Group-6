@@ -66,9 +66,9 @@ def create_word_dictionary(avg_std_df, df, quantized_data, directory, window_len
             if i + window_length < quantized_data.shape[1]:
                 avg_q = df.loc[index][i:i + window_length].tolist()
                 win = row[i:i + window_length].tolist()
-                pair = [folder_name, index + 1, i, avg_std_df.iloc[index]['avg'],
+                pair = [folder_name, index + 1, ' '.join(map(str, win)), i, avg_std_df.iloc[index]['avg'],
                         avg_std_df.iloc[index]['std'], np.mean(avg_q)]
-                word_list.append(pair + win)
+                word_list.append(pair)
     return word_list
 
 
@@ -123,4 +123,7 @@ def task0a(folder_directory, window_length, shift_length, resolution):
         word_file = folder_directory + '\\' + str(key) + '.wrd'
         with open(word_file, 'w', newline="") as f:
             csv.writer(f, delimiter=' ').writerows(value)
+            f.close()
     print("    ****Created dictionaries(.wrd) for all the gesture files****")
+    # wrd = folder_directory + '\\1.wrd'
+    # df = pd.read_csv(wrd, sep=' ')
