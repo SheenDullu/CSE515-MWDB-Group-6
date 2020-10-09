@@ -1,11 +1,8 @@
-Task 0a :
 
-format:
-Component Sensor_id Symbolic_Rep Time Average_Amp Std Average_Quantization 
+Task 0a:
+Component Sensor_id Symbolic_Rep Time Average_Amp Std Average_Quantization
 
-Task 0b :
-
-format:
+Task 0b:
 A single array
 
 Divide the array into 4 equal parts to get the 4 individual components [W,X,Y,Z]

@@ -125,5 +125,3 @@ def task0a(folder_directory, window_length, shift_length, resolution):
             csv.writer(f, delimiter=' ').writerows(value)
             f.close()
     print("    ****Created dictionaries(.wrd) for all the gesture files****")
-    # wrd = folder_directory + '\\1.wrd'
-    # df = pd.read_csv(wrd, sep=' ')
