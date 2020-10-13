@@ -21,8 +21,8 @@ def find_wrd(loc):
 
 def tf_f(data):
     # Total number of words recorded by a sensor
-    word_sensor = (data['sensor_id'].value_counts()[0])
-
+    word_sensor = (data.groupby(['component',  'sensor_id']).size().reset_index()[0].values[0])
+    # print(word_sensor.)
     # Count the frequency of words in a sensor's time series
     tf = pd.DataFrame(data.groupby(['component', 'f', 'sensor_id', 'word']).size() / word_sensor).reset_index()
     return tf
@@ -103,7 +103,7 @@ def align(vector):
     for f in range(2, num_files + 1):
         temp = comp_df[comp_df['f'] == str(f)].drop(['f'], axis=1)
         df = pd.merge(df, temp, on=['sensor_id', 'word'], how='outer', suffixes=('_' + str(f - 1), '_' + str(f)))
-    df = df.fillna(-1)
+    df = df.fillna(0)
 
     # Partition file based standardised vector based on sensor and outer join to standardise every sensor vector
     zero = df[df['sensor_id'] == '0'].drop(['sensor_id'], axis=1)
@@ -112,7 +112,7 @@ def align(vector):
         temp = df[df['sensor_id'] == str(i)].drop(['sensor_id'], axis=1)
         zero = pd.merge(zero, temp, on=['word'], how='outer', suffixes=('_' + str(i - 1), '_' + str(i)))
 
-    zero = zero.fillna(-1)
+    zero = zero.fillna(0)
     zero = zero.sort_values('word')
 
     for c in comp:
@@ -154,10 +154,10 @@ def Task0b(loc):
     data = find_wrd(loc)
     file_num = data['f'].astype(int).unique()
 
-    print("Creating Vectors")
+    print("Creating Vectors...")
     vec = vectors(data)
 
-    print("Standardizing Vectors")
+    print("Standardizing Vectors...")
     tf, tf_idf = align(vec)
 
     print("Writing results to file...")
@@ -167,4 +167,4 @@ def Task0b(loc):
 
 
 if __name__ == '__main__':
-    Task0b(r"D:\ASU\Courses\MWDB\Project\Phase 2\Code\data")
+    Task0b(r"C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\data")
