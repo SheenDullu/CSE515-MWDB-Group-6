@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 
+## TODO Deprecated part will delete soon
 def find_wrd(loc):
     f_wrd = pd.DataFrame()
     all_files = glob.glob(os.path.join(loc) + "/*.wrd")
