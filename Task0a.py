@@ -128,17 +128,21 @@ def task0a(folder_directory, window_length, shift_length, resolution):
 def parse_and_store_file_data(file_dict, file, all_words, vectors):
     file_name = file.split("\\")[-1].split(".")[0]
     with open(file, 'r') as f:
-        if file_name not in file_dict.keys():
-            file_dict[file_name] = all_words.copy()
+        sensor_dict = dict()
         for line in f:
             row = line.strip().split(',')
             word = ' '.join(map(str, row[0:3]))
-            if word in file_dict[file_name].keys():
-                file_dict[file_name][word] += 1
-    vector = dict()
-    vector["file"] = file_name
-    vector.update(file_dict[file_name])
-    vectors.append(vector)
+            if row[1] not in sensor_dict.keys():
+                sensor_dict[row[1]] = all_words.copy()
+            if word in sensor_dict[row[1]].keys():
+                sensor_dict[row[1]][word] += 1
+        file_dict[file_name] = sensor_dict
+    for key, value in sensor_dict.items():
+        vector = dict()
+        vector["file"] = file_name
+        vector["sensor"] = int(key)
+        vector.update(value)
+        vectors.append(vector)
 
 
 def fill_word_dictionary(directory, all_words):
@@ -154,30 +158,33 @@ def fill_word_dictionary(directory, all_words):
 def calculations(directory, data_dict, data_df, all_words):
     tf = all_words.copy()
     tf_idf = all_words.copy()
-    for file_name, words_dict in data_dict.items():
+    for file_name, sensor_dict in data_dict.items():
         tf_vector = list()
         tf_idf_vector = list()
-        total_words = sum(words_dict.values())
+        for sensor, words_dict in sensor_dict.items():
+            total_words = sum(words_dict.values())
 
-        num_of_words_in_gesture = data_df.astype(bool).sum(axis=0)
-        for word, count in words_dict.items():
-            tf[word] = count / total_words
+            compute_tf_idf = data_df.loc[data_df['sensor'] == int(sensor)]
+            num_of_docs_with_gesture = compute_tf_idf.astype(bool).sum(axis=0)
 
-            d_idf = float(num_of_words_in_gesture[word])
-            tf_idf[word] = float(tf[word]) * (math.log10(len(data_df.columns) / d_idf)) if d_idf > 0.0 else 0.0
+            for word, count in words_dict.items():
+                tf[word] = count / total_words
 
-        tf_vector.append(tf.values())
-        tf_idf_vector.append(tf_idf.values())
+                d_idf = float(num_of_docs_with_gesture[word])
+                tf_idf[word] = float(tf[word]) * (math.log10(len(data_df.columns) / d_idf)) if d_idf > 0.0 else 0.0
 
-        tf = dict.fromkeys(tf, 0)
-        tf_idf = dict.fromkeys(tf_idf, 0)
+            tf_vector.append(tf.values())
+            tf_idf_vector.append(tf_idf.values())
+
+            tf = dict.fromkeys(tf, 0)
+            tf_idf = dict.fromkeys(tf_idf, 0)
 
         with open(directory + '/tf_vectors_' + file_name + '.txt', 'w', newline="") as f:
-            csv.writer(f, delimiter='\n').writerows(tf_vector)
+            csv.writer(f, delimiter=',').writerows(tf_vector)
             f.close()
 
         with open(directory + '/tfidf_vectors_' + file_name + '.txt', 'w', newline="") as f:
-            csv.writer(f, delimiter='\n').writerows(tf_idf_vector)
+            csv.writer(f, delimiter=',').writerows(tf_idf_vector)
             f.close()
 
 
