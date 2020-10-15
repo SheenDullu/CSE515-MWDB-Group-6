@@ -160,7 +160,9 @@ def calculations(directory, data_dict, data_df, all_words):
     tf_idf = all_words.copy()
     for file_name, sensor_dict in data_dict.items():
         tf_vector = list()
+        tf_vector.append(tf.keys())
         tf_idf_vector = list()
+        tf_idf_vector.append(tf_idf.keys())
         for sensor, words_dict in sensor_dict.items():
             total_words = sum(words_dict.values())
 
