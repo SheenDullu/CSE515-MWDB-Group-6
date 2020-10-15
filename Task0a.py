@@ -1,11 +1,13 @@
 import csv
 import glob
-import os.path
+import math
 
 import numpy as np
 import pandas as pd
 import scipy.stats
 from scipy.integrate import quad
+
+import Utilities
 
 
 class Bands:
@@ -102,12 +104,8 @@ def read_gestures_from_csv(all_files, directory, shift_length, window_length, ba
                                                            window_length, shift_length))
 
 
-def get_all_sub_folders(folder_directory):
-    return [d for d in os.listdir(folder_directory) if os.path.isdir(os.path.join(folder_directory, d))]
-
-
 def task0a(folder_directory, window_length, shift_length, resolution):
-    dirs = get_all_sub_folders(folder_directory)
+    dirs = Utilities.get_all_sub_folders(folder_directory)
     print("Building Gaussian Bands...")
     bands = gaussian_bands(resolution)
     print("Done!")
@@ -122,6 +120,76 @@ def task0a(folder_directory, window_length, shift_length, resolution):
     for key, value in word_dict.items():
         word_file = folder_directory + '\\' + str(key) + '.wrd'
         with open(word_file, 'w', newline="") as f:
-            csv.writer(f, delimiter=' ').writerows(value)
+            csv.writer(f, delimiter=',').writerows(value)
             f.close()
     print("    ****Created dictionaries(.wrd) for all the gesture files****")
+
+
+def parse_and_store_file_data(file_dict, file, all_words, vectors):
+    file_name = file.split("\\")[-1].split(".")[0]
+    with open(file, 'r') as f:
+        if file_name not in file_dict.keys():
+            file_dict[file_name] = all_words.copy()
+        for line in f:
+            row = line.strip().split(',')
+            word = ' '.join(map(str, row[0:3]))
+            if word in file_dict[file_name].keys():
+                file_dict[file_name][word] += 1
+    vector = dict()
+    vector["file"] = file_name
+    vector.update(file_dict[file_name])
+    vectors.append(vector)
+
+
+def fill_word_dictionary(directory, all_words):
+    all_files = glob.glob(directory + "/*.wrd")
+    file_dict = dict()
+    vectors = list()
+    for file in all_files:
+        parse_and_store_file_data(file_dict, file, all_words, vectors)
+    df = pd.DataFrame(vectors)
+    return file_dict, df
+
+
+def calculations(directory, data_dict, data_df, all_words):
+    tf = all_words.copy()
+    tf_idf = all_words.copy()
+    for file_name, words_dict in data_dict.items():
+        tf_vector = list()
+        tf_idf_vector = list()
+        total_words = sum(words_dict.values())
+
+        num_of_words_in_gesture = data_df.astype(bool).sum(axis=0)
+        for word, count in words_dict.items():
+            tf[word] = count / total_words
+
+            d_idf = float(num_of_words_in_gesture[word])
+            tf_idf[word] = float(tf[word]) * (math.log10(len(data_df.columns) / d_idf)) if d_idf > 0.0 else 0.0
+
+        tf_vector.append(tf.values())
+        tf_idf_vector.append(tf_idf.values())
+
+        tf = dict.fromkeys(tf, 0)
+        tf_idf = dict.fromkeys(tf_idf, 0)
+
+        with open(directory + '/tf_vectors_' + file_name + '.txt', 'w', newline="") as f:
+            csv.writer(f, delimiter='\n').writerows(tf_vector)
+            f.close()
+
+        with open(directory + '/tfidf_vectors_' + file_name + '.txt', 'w', newline="") as f:
+            csv.writer(f, delimiter='\n').writerows(tf_idf_vector)
+            f.close()
+
+
+def task0b(directory):
+    all_words = Utilities.getAllWords(directory)
+    print("Building all words dictionary")
+    data_dict, data_df = fill_word_dictionary(directory, all_words)
+    print("Performing TF, TF-IDF calculations")
+    calculations(directory, data_dict, data_df, all_words)
+    print("     ****Created .txt files****")
+
+
+if __name__ == '__main__':
+    # task0a(r'D:\ASU\Courses\MWDB\Project\Phase 2\Code\data', 3, 2, 4)
+    task0b(r'D:\ASU\Courses\MWDB\Project\Phase 2\Code\data')
