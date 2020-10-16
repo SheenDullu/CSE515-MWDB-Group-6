@@ -14,10 +14,12 @@ def main():
             resolution = int(input("Enter resolution (r): \n"))
             task0a(folder_directory, window_length, shift_length, resolution)
             print("########## Completed Task 1 ##########")
-        if task == '0b':
+        elif task == '0b':
             directory = input("Input Directory path of the gesture folders:\n")
             task0b(directory)
             print("########## Completed Task 2 ##########")
+        elif task == '0':
+            exit()
 
 
 if __name__ == '__main__':
