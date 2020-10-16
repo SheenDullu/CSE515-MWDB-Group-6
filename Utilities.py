@@ -16,3 +16,7 @@ def getAllWords(directory):
                 word = ' '.join(map(str, row[0:3]))
                 words.add(word)
     return dict.fromkeys(sorted(words), 0)
+
+ud = getAllWords('F:\mwdb\data')
+lists = [k for k in ud.keys()]
+print(len(lists))

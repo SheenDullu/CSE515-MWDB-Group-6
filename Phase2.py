@@ -1,11 +1,12 @@
 from Task0 import task0a, task0b
-
+import task1
 
 def main():
     while True:
         print("########## Phase 1 ##########")
         print("Task 0a: Perform Normalization and Quantization")
         print("Task 0b: Build Gesture Vectors")
+        print("Task 1: Build the word score")
         task = input("What Task  do you want to perform: (enter 0 to exit)\n")
         if task == '0a':
             folder_directory = input("Input Directory path of the gesture folders:\n")
@@ -18,6 +19,8 @@ def main():
             directory = input("Input Directory path of the gesture folders:\n")
             task0b(directory)
             print("########## Completed Task 2 ##########")
+        elif task == '1':
+            task1.main()
         elif task == '0':
             exit()
 

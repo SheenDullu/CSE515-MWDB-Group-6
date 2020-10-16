@@ -90,11 +90,11 @@ def calculate_avg_std_sensor_wise(df):
 
 
 def read_gestures_from_csv(all_files, directory, shift_length, window_length, bands, word_dict):
-    for file in all_files:
-        file_name = file.split("\\")[-1].split(".")[0]
+    for file_ in all_files:
+        file_name = file_.split("\\")[-1].split(".")[0]
         if file_name not in word_dict.keys():
             word_dict[file_name] = list()
-        df = pd.read_csv(file, header=None)
+        df = pd.read_csv(file_, header=None)
         column_names = [x for x in range(1, df.shape[1])]
         df = pd.DataFrame(df, columns=column_names)
         avg_std_df = calculate_avg_std_sensor_wise(df)
