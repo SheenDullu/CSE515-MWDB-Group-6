@@ -5,4 +5,7 @@ Component Sensor_id Symbolic_Rep Time Average_Amp Std Average_Quantization
 Task 0b:
 A comma separated vector.
 
+Task 1:
+Word and score to the latent feature
+
 
