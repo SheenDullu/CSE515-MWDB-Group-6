@@ -3,9 +3,6 @@ Task 0a:
 Component Sensor_id Symbolic_Rep Time Average_Amp Std Average_Quantization
 
 Task 0b:
-A single array
+A comma separated vector.
 
-Divide the array into 4 equal parts to get the 4 individual components [W,X,Y,Z]
-Divide each file into 20 parts to get sensor information
 
-Each element in sensor information corresponds to the unique words in the dictionary in a sorted manner
