@@ -7,7 +7,7 @@ def main():
         print("Task 0a: Perform Normalization and Quantization")
         print("Task 0b: Build Gesture Vectors")
         print("Task 1: Build the word score")
-        task = input("What Task  do you want to perform: (enter 0 to exit)\n")
+        task = input("What Task do you want to perform: (enter 0 to exit)\n")
         if task == '0a':
             folder_directory = input("Input Directory path of the gesture folders:\n")
             window_length = int(input("Enter window length(w): \n"))

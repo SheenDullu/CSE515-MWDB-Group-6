@@ -47,7 +47,7 @@ def reading_tfidf(datadir):
     return tfidf
     
 
-def calculating_nmf(k,vector,unique_word_dicts):
+def calculating_nmf(k,vector,unique_word_dicts,datadir):
     nmf = NMF(n_components=k)
     nmf.fit(vector)
     nmf_data = nmf.transform(vector)
@@ -61,7 +61,7 @@ def calculating_nmf(k,vector,unique_word_dicts):
     # plt.show()
 
 
-    word_file = open('F:\mwdb\data\word_score_nmf.txt', mode='w')
+    word_file = open(datadir + '\word_score_nmf.txt', mode='w')
     word_writer = csv.writer(word_file, delimiter=',')
     for i in range(k):
         loading_scores = pd.DataFrame(columns=nmf.components_[i])
@@ -73,14 +73,14 @@ def calculating_nmf(k,vector,unique_word_dicts):
             word_writer.writerow([loading_scores.iloc[0,j],sorted_values[j]])
     print("Printed word and score file for NMF")
 
-def calculating_pca(k,vector,unique_word_dicts):
+def calculating_pca(k,vector,unique_word_dicts,datadir):
     pca = PCA(n_components=k)
     # tf = tf.T
     pca.fit(vector)
     pca_data = pca.transform(vector)
     per_var = np.round(pca.explained_variance_ratio_* 100, decimals=1)
 
-    word_file = open('F:\mwdb\data\word_score_pca.txt', mode='w')
+    word_file = open(datadir + '\word_score_pca.txt', mode='w')
     word_writer = csv.writer(word_file, delimiter=',')
     for i in range(k):
         loading_scores = pd.DataFrame(columns=pca.components_[i])
@@ -93,12 +93,12 @@ def calculating_pca(k,vector,unique_word_dicts):
     print("Printed word and score file for PCA")
 
 
-def calculating_svd(k,vector,unique_word_dicts):
+def calculating_svd(k,vector,unique_word_dicts,datadir):
     svd = TruncatedSVD(n_components=k)
     svd.fit(vector)
     svd_data = svd.transform(vector)
 
-    word_file = open('F:\mwdb\data\word_score_svd.txt', mode='w')
+    word_file = open(datadir + '\word_score_svd.txt', mode='w')
     word_writer = csv.writer(word_file, delimiter=',')
     for i in range(k):
         loading_scores = pd.DataFrame(columns=svd.components_[i])
@@ -110,12 +110,12 @@ def calculating_svd(k,vector,unique_word_dicts):
             word_writer.writerow([loading_scores.iloc[0,j],sorted_values[j]])
     print("Printed word and score file for SVD")
 
-def calculating_lda(k,vector,unique_word_dicts):
+def calculating_lda(k,vector,unique_word_dicts,datadir):
     lda = LDA(n_components=k)
     lda.fit(vector)
     lda_data = lda.transform(vector)
     
-    word_file = open('F:\mwdb\data\word_score_lda.txt', mode='w')
+    word_file = open(datadir + '\word_score_lda.txt', mode='w')
     word_writer = csv.writer(word_file, delimiter=',')
     for i in range(k):
         loading_scores = pd.DataFrame(columns=lda.components_[i])
@@ -155,27 +155,27 @@ def main():
     while True:
         if user_option == "1":
             if flag == 1:
-                calculating_pca(k,tf,unique_word_dicts)
+                calculating_pca(k,tf,unique_word_dicts,datadir)
             else:
-                calculating_pca(k,tfidf,unique_word_dicts)
+                calculating_pca(k,tfidf,unique_word_dicts,datadir)
             break
         elif user_option == "2":
             if flag == 1:
-                calculating_svd(k,tf,unique_word_dicts)
+                calculating_svd(k,tf,unique_word_dicts,datadir)
             else:
-                calculating_svd(k,tfidf,unique_word_dicts)
+                calculating_svd(k,tfidf,unique_word_dicts,datadir)
             break
         elif user_option == "3":
             if flag == 1:
-                calculating_nmf(k,tf,unique_word_dicts)
+                calculating_nmf(k,tf,unique_word_dicts,datadir)
             else:
-                calculating_nmf(k,tfidf,unique_word_dicts)
+                calculating_nmf(k,tfidf,unique_word_dicts,datadir)
             break
         elif user_option == "4":
             if flag == 1:
-                calculating_lda(k,tf,unique_word_dicts)
+                calculating_lda(k,tf,unique_word_dicts,datadir)
             else:
-                calculating_lda(k,tfidf,unique_word_dicts)
+                calculating_lda(k,tfidf,unique_word_dicts,datadir)
             break
         elif user_option == "0":
             exit()
