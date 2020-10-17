@@ -1,43 +1,47 @@
-import glob
-import os
-
-import numpy as np
 import pandas as pd
 
-
-def find_vec(loc, algo):
-    vec = pd.DataFrame()
-
-    all_files = glob.glob(os.path.join(loc) + "\\" + algo + "_vectors_*.txt")
-    names = [x for x in range(1, 61)]
-    for file in all_files:
-        data = pd.read_csv(file)
-
-        vec = pd.concat([vec, data], axis=1)
-    vec.columns = names
-    return vec
+import Utilities
 
 
-def dot(target, source):
-    dot_product = list(np.sum(source * target, axis=0))
-    sort = sorted(dot_product)
-    result = []
-    for i in range(len(sort) - 1, len(sort) - 11, -1):
-        result.append(dot_product.index(sort[i]) + 1)
-    return result
+def printTop10Values(similarity_measure):
+    i = 1
+    for index, row in similarity_measure.iteritems():
+        print(i, '. Gesture ', index.split("_")[2].split(".")[0], ", ", row)
+        i = i + 1
 
 
-def main(data_loc, loc, algo, option):
-    # data_loc=os.path.join(*loc.split('\\')[:-1])
-    # print(data_loc)
-    source = find_vec(data_loc, algo).to_numpy()
+def dotProduct(directory, file, model):
+    gesture = directory + '\\' + model + '_vectors_' + file + '.txt'
+    all_vectors = pd.DataFrame.from_dict(Utilities.getAllVectors(directory, model), orient='index')
+    gesture_vector = pd.Series(Utilities.getAVector(gesture))
+    dot_product = all_vectors.dot(gesture_vector)
+    dot_product = dot_product.sort_values(ascending=False)
+    printTop10Values(dot_product[:11])
 
-    target = pd.read_csv(loc).to_numpy()
 
-    if (option == 1):
-        print(dot(target, source))
+def main():
+    while True:
+        # print("Top 10 most Similar Gesture")
+        # directory = input("Enter the directory containing all the components, words and vectors: \n")
+        # gesture = input("Enter gesture number\n")
+        # vector_model = input("Enter the vector model you want to use \nEnter tf or tfidf: ")
+        # print('Enter 1 for Dot Product')
+        # print('Enter 2 for PCA')
+        # print('Enter 3 for SVD')
+        # print('Enter 4 for NMF')
+        # print('Enter 5 for LDA')
+        # print('Enter 6 for Edit Distance')
+        # print('Enter 7 for DTW')
+        task_input = input("What Task  do you want to perform: (enter 0 to exit)\n")
+        task = int(task_input)
+        if task == 1:
+            # dotProduct(directory, gesture, vector_model)
+            dotProduct(r'D:\ASU\Courses\MWDB\Project\Phase 2\Code\data', '1', 'tf')
+            print("########## Completed Dot Product ##########")
+        if task == 0:
+            print("Thank you. Bye")
+            break
 
 
 if __name__ == '__main__':
-    main(r"C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\data",
-         r"C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\data\tf_vectors_1.txt", "tf", 1)
+    main()

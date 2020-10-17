@@ -189,7 +189,7 @@ def writeToFile(file_name, data):
 
 
 def task0b(directory):
-    all_words = Utilities.getAllWords(directory)
+    all_words = Utilities.fetchAllWordsFromDictionary(directory)
     print("Building all words dictionary")
     data_dict, data_df = fill_word_dictionary(directory, all_words)
     print("Performing TF, TF-IDF calculations")
