@@ -11,10 +11,11 @@ import Utilities
 
 
 class Bands:
-    def __init__(self, index, lower_bound, upper_bound):
+    def __init__(self, index, lower_bound, upper_bound, mid_point):
         self.index = index
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
+        self.mid_point = mid_point
 
 
 def gaussian_bands(resolution):
@@ -40,7 +41,10 @@ def gaussian_bands(resolution):
         area = round(area, 5)
         length = round(2.0 * (area / total_area), 5)
 
-        band = Bands(index, round(upper_bound - length, 5), round(upper_bound, 5))
+        lower_bound = round(upper_bound - length, 5)
+        upper_bound = round(upper_bound, 5)
+        mid_point = round(upper_bound - ((upper_bound - lower_bound) / 2), 5)
+        band = Bands(index, lower_bound, upper_bound, mid_point)
         upper_bound = upper_bound - length
         list_bands.append(band)
         index += 1
@@ -48,10 +52,13 @@ def gaussian_bands(resolution):
 
 
 def quantization(df, bands):
+    mid_point = df.copy()
     for band in bands:
         df.mask((df >= band.lower_bound) & (df < band.upper_bound), band.index, inplace=True)
     df.loc[:] = df.astype(int)
-    return df
+    for band in bands:
+        mid_point.mask((mid_point >= band.lower_bound) & (mid_point < band.upper_bound), band.mid_point, inplace=True)
+    return df, mid_point
 
 
 def normalizeSensorWise(df):
@@ -60,13 +67,13 @@ def normalizeSensorWise(df):
     return df_norm
 
 
-def create_word_dictionary(avg_std_df, df_norm, quantized_data, directory, window_length, shift_length):
+def create_word_dictionary(avg_std_df, mid_point_df, quantized_data, directory, window_length, shift_length):
     folder_name = directory.split("\\")[-1]
     word_list = list()
     for index, row in quantized_data.iterrows():
         for i in range(0, quantized_data.shape[1], shift_length):
             if i + window_length < quantized_data.shape[1]:
-                avg_q = df_norm.loc[index][i:i + window_length].tolist()
+                avg_q = mid_point_df.loc[index][i:i + window_length].tolist()
                 win = row[i:i + window_length].tolist()
                 pair = [folder_name, index + 1, ' '.join(map(str, win)), i, avg_std_df.iloc[index]['avg'],
                         avg_std_df.iloc[index]['std'], np.mean(avg_q)]
@@ -99,8 +106,8 @@ def read_gestures_from_csv(all_files, directory, shift_length, window_length, ba
         df = pd.DataFrame(df, columns=column_names)
         avg_std_df = calculate_avg_std_sensor_wise(df)
         df_norm = normalizeSensorWise(df)
-        quantized_data = quantization(df_norm.copy(), bands)
-        word_dict[file_name].extend(create_word_dictionary(avg_std_df, df_norm, quantized_data, directory,
+        quantized_data, mid_point_df = quantization(df_norm.copy(), bands)
+        word_dict[file_name].extend(create_word_dictionary(avg_std_df, mid_point_df, quantized_data, directory,
                                                            window_length, shift_length))
 
 
@@ -198,5 +205,5 @@ def task0b(directory):
 
 
 if __name__ == '__main__':
-    # task0a(r'D:\ASU\Courses\MWDB\Project\Phase 2\Code\data', 3, 2, 4)
-    task0b(r'D:\ASU\Courses\MWDB\Project\Phase 2\Code\data')
+    task0a(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data', 3, 2, 4)
+    task0b(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')

@@ -1,14 +1,16 @@
 import glob
 import re
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+
 import Utilities
 
 
 def printTop10Values(similarity_measure):
     i = 1
     for index, row in similarity_measure.iteritems():
-        print(i, '. Gesture ', index.split("_")[2].split(".")[0], ", ", row)
+        print(i, '. Gesture ', index.split(".")[0].split('_')[-1], ", ", row)
         i = i + 1
 
 
@@ -89,7 +91,7 @@ def main():
             print("########## Completed Edit Distance ##########")
         if task == 1:
             # dotProduct(directory, gesture, vector_model)
-            dotProduct(r'D:\ASU\Courses\MWDB\Project\Phase 2\Code\data', '1', 'tf')
+            dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data', '570', 'tfidf')
             print("########## Completed Dot Product ##########")
         if task == 0:
             print("Thank you. Bye")

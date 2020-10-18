@@ -29,13 +29,13 @@ def getAllUniqueWords(directory):
 def getAllVectors(directory, model):
     vectors = dict()
     all_files = glob.glob(directory + "/" + model + "_vectors_*.txt")
-    all_files.sort(key=lambda x: int((x.split("_")[2]).split(".")[0]))
+    all_files.sort(key=lambda x: int((x.split('\\')[-1]).split('.')[0].split('_')[-1]))
     for filename in all_files:
         with open(filename, 'r') as f:
             for line in f:
                 row = line.strip().split(',')
                 vector = [float(i) for i in row]
-                vectors[filename] = vector
+                vectors[filename.split('\\')[-1]] = vector
     return vectors
 
 
@@ -64,6 +64,7 @@ def fetchWordsFromFile(directory, filename):
                 wrdlist.append(wrd)
                 wordDict[key] = wrdlist
     return wordDict
+
 
 def fetchAllWordsFromFile(directory):
     wordArrayDict = []
