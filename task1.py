@@ -15,6 +15,7 @@ import csv
 def getAllWords(directory):
     words = list()
     all_files = glob.glob(directory + "/*.wrd")
+
     for filename in all_files:
         with open(filename, 'r') as f:
             for line in f:
@@ -183,6 +184,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
+    # main()
+    print(getAllWords(r"C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\data"))
 
