@@ -25,27 +25,77 @@ def dotProduct(directory, file, model):
     printTop10Values(dot_product[:11])
 
 
-def editDistanceFunc(P, Q):
+# def editDistanceFunc(P, Q):
+#     replaceCost = 1
+#     insertCost = 1
+#     deleteCost = 1
+#     if len(P) < len(Q):
+#         P, Q, = Q, P
+#     i = len(P) + 1
+#     j = len(Q) + 1
+#     matrix = np.zeros((i, j))
+#
+#     matrix[:, 0] = np.arange(0,i)
+#     matrix[0,:] = np.arange(0,j)
+#
+#     for x in range(1, i):
+#         for y in range(1, j):
+#             if P[x-1] == Q[y-1]:
+#                 matrix[x, y] = matrix[x-1, y-1]
+#             else:
+#                 matrix[x, y] = min(matrix[x-1, y] + insertCost, matrix[x, y-1] + deleteCost, matrix[x-1, y-1] +
+#                                    replaceCost)
+#     return matrix[i - 1, j - 1]
+
+def editDistanceComp(matrix,p,q,P,Q,r,i,d):
     replaceCost = 1
     insertCost = 1
     deleteCost = 1
+
+
+    if (p==0 or q==0):
+        return  matrix[p,q]
+
+    if(P[p]== Q[q]):
+        if (matrix[p-1,q-1] == -1):
+            matrix[p-1,q-1]=editDistanceComp(matrix,p-1,q-1,P,Q,r,i,d)
+        return matrix[p-1,q-1]
+
+    if(matrix[p,q-1]==-1):
+        if(d>15):
+            matrix[p,q-1]= 1000
+        else :
+            matrix[p,q-1]=editDistanceComp(matrix,p,q-1,P,Q,r,i,d+1)
+    if(matrix[p-1,q-1]==-1):
+        if(r>15):
+            matrix[p-1,q-1]= 1000
+        else :
+            matrix[p-1,q-1]=editDistanceComp(matrix,p-1,q-1,P,Q,r+1,i,d)
+    if(matrix[p-1,q]==-1):
+        if(i>15):
+            matrix[p-1,q]= 1000
+        else :
+            matrix[p-1,q]=editDistanceComp(matrix,p-1,q,P,Q,r,i+1,d)
+
+
+    return min(matrix[p-1, q] + insertCost, matrix[p, q-1] + deleteCost, matrix[p-1, q-1] +replaceCost)
+
+def editDistanceFunc(P,Q):
+
     if len(P) < len(Q):
         P, Q, = Q, P
-    i = len(P) + 1
-    j = len(Q) + 1
-    matrix = np.zeros((i, j))
+    i = len(P)
+    j = len(Q)
+
+    matrix = np.ones((i, j))*-1
 
     matrix[:, 0] = np.arange(0,i)
     matrix[0,:] = np.arange(0,j)
 
-    for x in range(1, i):
-        for y in range(1, j):
-            if P[x-1] == Q[y-1]:
-                matrix[x, y] = matrix[x-1, y-1]
-            else:
-                matrix[x, y] = min(matrix[x-1, y] + insertCost, matrix[x, y-1] + deleteCost, matrix[x-1, y-1] +
-                                   replaceCost)
-    return matrix[i - 1, j - 1]
+    matrix[i-1,j-1] = editDistanceComp(matrix,i-1,j-1,P,Q,0,0,0)
+
+
+    return matrix[i-1,j-1]
 
 def editDistance(directory, file):
     wrdfile = Utilities.fetchWordsFromFile(directory, file)
@@ -53,6 +103,7 @@ def editDistance(directory, file):
 
     all_files = glob.glob(directory + "/*.wrd")
     all_files.sort(key=lambda var: [int(x) if x.isdigit() else x for x in re.split('(\d+)', var)])
+
 
     editValues = []
     for file in allwrdfiles:
@@ -100,7 +151,14 @@ def main():
 
 
 if __name__ == '__main__':
+
     main()
+
+
+    # start=time.time()
+    # print(editDistance(r'C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\data','42'))
+    # print(time.time()-start)
+
 
 
 
