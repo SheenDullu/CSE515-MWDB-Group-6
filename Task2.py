@@ -5,6 +5,8 @@ import numpy as np
 import Utilities
 
 
+import time
+
 def printTop10Values(similarity_measure):
     i = 1
     for index, row in similarity_measure.iteritems():
@@ -30,10 +32,9 @@ def editDistanceFunc(P, Q):
     i = len(P) + 1
     j = len(Q) + 1
     matrix = np.zeros((i, j))
-    for x in range(i):
-        matrix[x, 0] = x*insertCost
-    for y in range(j):
-        matrix[0, y] = y*insertCost
+
+    matrix[:, 0] = np.arange(0,i)
+    matrix[0,:] = np.arange(0,j)
 
     for x in range(1, i):
         for y in range(1, j):
@@ -98,3 +99,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+
