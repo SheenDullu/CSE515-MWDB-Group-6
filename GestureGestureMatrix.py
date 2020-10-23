@@ -10,6 +10,9 @@ import Utilities
 def dotProduct(directory):
     all_vectors = pd.DataFrame.from_dict(Utilities.getAllVectors(directory, 'tf'), orient='index')
     dot_product = all_vectors.dot(all_vectors.T)
+    dot_product.to_csv('dot_product_matrix')
+    # to read
+    # temp = pd.read_csv('dot_product_matrix', index_col=0)
     return dot_product
 
 
@@ -51,5 +54,5 @@ def editDistance(directory):
 
 
 if __name__ == '__main__':
-    # dotProduct(r'D:\ASU\Courses\MWDB\Project\Phase 2\Code\data')
-    editDistance(r'C:\Class\CSE515 Multimedia\3_class_gesture_data')
+    dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
+    # editDistance(r'D:\ASU\Courses\MWDB\Project\Phase 2\Code\data')

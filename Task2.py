@@ -70,29 +70,26 @@ def editDistance(directory, file):
     editValues = []
     counter=0
     important_sensors=set([5,6,7,8,9,10,11,12])
-    for file in allwrdfiles:
+    for file in allwrdfiles.keys():
         editVal = 0
 
-        for key in wrdfile:
+        for key in wrdfile.keys():
 
             # if (counter >30 and counter<60):
 
-            numArr = []
-            numArr2 = []
-            for wrd in wrdfile[key]:
-
-                numArr.append(wrd)
-            for wrd in file[key]:
-                numArr2.append(wrd)
+            # numArr = []
+            # numArr2 = []
+            # for wrd in wrdfile[key]:
+            #
+            #     numArr.append(wrd)
+            # for wrd in file[key]:
+            #     numArr2.append(wrd)
 
             if (int(key[1]) in important_sensors):
                 multiplier=2
-
-
             else:
                 multiplier=0.5
-
-            editVal += multiplier * Utilities.editDistanceFunc(numArr, numArr2)
+            editVal += multiplier * Utilities.editDistanceFunc(wrdfile[key], allwrdfiles[file][key])
 
 
 
@@ -135,12 +132,5 @@ def main():
 
 
 if __name__ == '__main__':
-
-    main()
-
-
-
-
-
-
-
+    # main()
+    editDistance(r'D:\ASU\Courses\MWDB\Project\Phase 2\Code\data', '30')

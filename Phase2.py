@@ -19,8 +19,8 @@ def main():
             task0a(folder_directory, window_length, shift_length, resolution)
             print("########## Completed Task 1 ##########")
         elif task == '0b':
-            directory = input("Input Directory path of the gesture folders:\n")
-            task0b(directory)
+            # directory = input("Input Directory path of the gesture folders:\n")
+            task0b(Utilities.read_directory())
             print("########## Completed Task 2 ##########")
         elif task == '1':
             task1.main()

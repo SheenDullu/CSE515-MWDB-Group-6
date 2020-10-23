@@ -37,7 +37,7 @@ def getAllVectors(directory, model):
             for line in f:
                 row = line.strip().split(',')
                 vector = [float(i) for i in row]
-                vectors[filename.split('\\')[-1]] = vector
+                vectors[filename.split('\\')[-1].split("_")[-1].split('.')[0]] = vector
     return vectors
 
 
