@@ -1,6 +1,7 @@
 import glob
 import os
 import re
+import numpy as np
 
 
 def get_all_sub_folders(folder_directory):
@@ -86,6 +87,64 @@ def fetchAllWordsFromFile(directory):
                     wordDict[key] = wrdlist
         wordArrayDict.append(wordDict)
     return wordArrayDict
+
+def editDistanceComp(matrix,p,q,P,Q,r,i,d,con):
+    replaceCost = 2
+    insertCost = 1
+    deleteCost = 1
+
+
+    if (p==0 or q==0):
+
+        return 0
+
+    #Commented out the below code so that I can test the cost function. Can optimise the code later.
+    # if(i+d>0.3*con):
+    #     # print("id",i,d,0.3*con)
+    #     return 1000
+    #
+    # if(r>0.2* con):
+    #     # print('r',r)
+    #     return 1000
+
+    if(P[p]== Q[q]):
+        if (matrix[p-1,q-1] == -1):
+            matrix[p-1,q-1]=editDistanceComp(matrix,p-1,q-1,P,Q,r,i,d,con)
+        return matrix[p-1,q-1]
+
+    if(matrix[p,q-1]==-1):
+
+        matrix[p,q-1]=editDistanceComp(matrix,p,q-1,P,Q,r,i,d+1,con)
+
+    if(matrix[p-1,q-1]==-1):
+
+        matrix[p-1,q-1]=editDistanceComp(matrix,p-1,q-1,P,Q,r+1,i,d,con)
+    if(matrix[p-1,q]==-1):
+
+
+        matrix[p-1,q]=editDistanceComp(matrix,p-1,q,P,Q,r,i+1,d,con)
+
+    # print(r,i,d)
+    return min(matrix[p-1, q] + insertCost,matrix[p, q-1] + deleteCost, matrix[p-1, q-1] + 1)
+
+def editDistanceFunc(P,Q):
+
+    if len(P) < len(Q):
+        P, Q, = Q, P
+    i = len(P)
+    j = len(Q)
+
+    con=(max(i,j))
+    matrix = np.ones((i, j))*-1
+
+    matrix[:, 0] = np.arange(0,i)
+    matrix[0,:] = np.arange(0,j)
+
+
+    matrix[i-1,j-1] = editDistanceComp(matrix,i-1,j-1,P,Q,0,0,0,con)
+
+
+    return matrix[i-1,j-1]
 
 
 if __name__ == '__main__':
