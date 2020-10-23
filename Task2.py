@@ -46,11 +46,25 @@ def dotProduct(directory, file, model):
 #                 matrix[x, y] = min(matrix[x-1, y] + insertCost, matrix[x, y-1] + deleteCost, matrix[x-1, y-1] +
 #                                    replaceCost)
 #     return matrix[i - 1, j - 1]
+def replace(s1,s2):
+    s1=s1.split(' ')
+    s2=s2.split(' ')
+
+    num1=0
+    num2=0
+    for i in range(len(s1)):
+        num1 = num1*10 + int(s1[i])
+        num2 = num2*10 + int(s2[i])
+
+    dif=abs(num1-num2)
+
+    #Denominator has to be changed
+    return (dif)/(666-111)
 
 def editDistanceComp(matrix,p,q,P,Q,r,i,d,con):
-    replaceCost = 10
-    insertCost = 4
-    deleteCost = 4
+    replaceCost = 2
+    insertCost = 1
+    deleteCost = 1
 
 
     if (p==0 or q==0):
@@ -83,8 +97,8 @@ def editDistanceComp(matrix,p,q,P,Q,r,i,d,con):
 
         matrix[p-1,q]=editDistanceComp(matrix,p-1,q,P,Q,r,i+1,d,con)
 
-
-    return min(matrix[p-1, q] +  insertCost*abs(P[p]-Q[q])*abs(P[p]-Q[q]),matrix[p, q-1] +   deleteCost*abs(P[p]-Q[q])*abs(P[p]-Q[q]), matrix[p-1, q-1] + replaceCost*abs(P[p]-Q[q]))
+    # print(r,i,d)
+    return min(matrix[p-1, q] +  insertCost,matrix[p, q-1] +   deleteCost, matrix[p-1, q-1] + 1)
 
 def editDistanceFunc(P,Q):
 
@@ -116,27 +130,39 @@ def editDistance(directory, file):
 
     editValues = []
     counter=0
+    important_sensors=set([5,6,7,8,9,10,11,12])
     for file in allwrdfiles:
-        editVal = 1000
+        editVal = 0
 
         for key in wrdfile:
 
-            editVal = 0
+            # if (counter >30 and counter<60):
+
             numArr = []
             numArr2 = []
             for wrd in wrdfile[key]:
-                numArr.extend(list(map(int, wrd.split(" "))))
-            for wrd in file[key]:
-                numArr2.extend(list(map(int, wrd.split(" "))))
 
-            editVal += editDistanceFunc(numArr, numArr2)
-        # print(counter)
+                numArr.append(wrd)
+            for wrd in file[key]:
+                numArr2.append(wrd)
+
+            if (int(key[1]) in important_sensors):
+                multiplier=2
+
+
+            else:
+                multiplier=0.5
+
+            editVal += multiplier * editDistanceFunc(numArr, numArr2)
+
+
+
         counter+=1
         editValues.append(editVal)
 
     vals = sorted(range(len(editValues)), key=lambda k: editValues[k])
 
-    for i in range(0, 31):
+    for i in range(0, 91):
         print(str(i+1) + " . Gesture " + all_files[vals[i]].split("\\")[-1].split(".")[0] + " , " + str(editValues[vals[i]]))
 
 def main():
@@ -171,9 +197,7 @@ if __name__ == '__main__':
     main()
 
 
-    # start=time.time()
-    # print(editDistance(r'C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\test','4'))
-    # print(time.time()-start)
+
 
 
 
