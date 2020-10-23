@@ -1,13 +1,11 @@
 import glob
 import re
 
-import numpy as np
 import pandas as pd
 
 import Utilities
+import dtw
 
-
-import time
 
 def printTop10Values(similarity_measure):
     i = 1
@@ -61,65 +59,6 @@ def replace(s1,s2):
     #Denominator has to be changed
     return (dif)/(666-111)
 
-def editDistanceComp(matrix,p,q,P,Q,r,i,d,con):
-    replaceCost = 2
-    insertCost = 1
-    deleteCost = 1
-
-
-    if (p==0 or q==0):
-
-        return 0
-
-    #Commented out the below code so that I can test the cost function. Can optimise the code later.
-    # if(i+d>0.3*con):
-    #     # print("id",i,d,0.3*con)
-    #     return 1000
-    #
-    # if(r>0.2* con):
-    #     # print('r',r)
-    #     return 1000
-
-    if(P[p]== Q[q]):
-        if (matrix[p-1,q-1] == -1):
-            matrix[p-1,q-1]=editDistanceComp(matrix,p-1,q-1,P,Q,r,i,d,con)
-        return matrix[p-1,q-1]
-
-    if(matrix[p,q-1]==-1):
-
-        matrix[p,q-1]=editDistanceComp(matrix,p,q-1,P,Q,r,i,d+1,con)
-
-    if(matrix[p-1,q-1]==-1):
-
-        matrix[p-1,q-1]=editDistanceComp(matrix,p-1,q-1,P,Q,r+1,i,d,con)
-    if(matrix[p-1,q]==-1):
-
-
-        matrix[p-1,q]=editDistanceComp(matrix,p-1,q,P,Q,r,i+1,d,con)
-
-    # print(r,i,d)
-    return min(matrix[p-1, q] +  insertCost,matrix[p, q-1] +   deleteCost, matrix[p-1, q-1] + 1)
-
-def editDistanceFunc(P,Q):
-
-    if len(P) < len(Q):
-        P, Q, = Q, P
-    i = len(P)
-    j = len(Q)
-
-    con=(max(i,j))
-    matrix = np.ones((i, j))*-1
-
-    matrix[:, 0] = np.arange(0,i)
-    matrix[0,:] = np.arange(0,j)
-
-
-    matrix[i-1,j-1] = editDistanceComp(matrix,i-1,j-1,P,Q,0,0,0,con)
-
-
-    return matrix[i-1,j-1]
-
-
 def editDistance(directory, file):
     wrdfile = Utilities.fetchWordsFromFile(directory, file)
     allwrdfiles = Utilities.fetchAllWordsFromFile(directory)
@@ -131,29 +70,26 @@ def editDistance(directory, file):
     editValues = []
     counter=0
     important_sensors=set([5,6,7,8,9,10,11,12])
-    for file in allwrdfiles:
+    for file in allwrdfiles.keys():
         editVal = 0
 
-        for key in wrdfile:
+        for key in wrdfile.keys():
 
             # if (counter >30 and counter<60):
 
-            numArr = []
-            numArr2 = []
-            for wrd in wrdfile[key]:
-
-                numArr.append(wrd)
-            for wrd in file[key]:
-                numArr2.append(wrd)
+            # numArr = []
+            # numArr2 = []
+            # for wrd in wrdfile[key]:
+            #
+            #     numArr.append(wrd)
+            # for wrd in file[key]:
+            #     numArr2.append(wrd)
 
             if (int(key[1]) in important_sensors):
                 multiplier=2
-
-
             else:
                 multiplier=0.5
-
-            editVal += multiplier * editDistanceFunc(numArr, numArr2)
+            editVal += multiplier * Utilities.editDistanceFunc(wrdfile[key], allwrdfiles[file][key])
 
 
 
@@ -162,7 +98,7 @@ def editDistance(directory, file):
 
     vals = sorted(range(len(editValues)), key=lambda k: editValues[k])
 
-    for i in range(0, 91):
+    for i in range(0, 11):
         print(str(i+1) + " . Gesture " + all_files[vals[i]].split("\\")[-1].split(".")[0] + " , " + str(editValues[vals[i]]))
 
 def main():
@@ -181,7 +117,7 @@ def main():
         task_input = input("What Task  do you want to perform: (enter 0 to exit)\n")
         task = int(task_input)
         if task == 6:
-            editDistance(r'C:\Class\CSE515 Multimedia\3_class_gesture_data', '1')
+            editDistance(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data', '278')
             print("########## Completed Edit Distance ##########")
         elif task == 1:
             # dotProduct(directory, gesture, vector_model)
@@ -193,12 +129,5 @@ def main():
 
 
 if __name__ == '__main__':
-
-    main()
-
-
-
-
-
-
-
+    # main()
+    editDistance(r'D:\ASU\Courses\MWDB\Project\Phase 2\Code\data', '30')

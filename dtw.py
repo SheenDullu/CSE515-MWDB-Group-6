@@ -11,7 +11,7 @@ def dynamicTimeWarping(directory,file):
     compareKeys.sort(key=lambda var:[int(x) if x.isdigit() else x for x in re.split('(\d+)',var)])
 
     for key in compareKeys:
-        compare=fetchAQA(directory,key.replace("Data\\",""))
+        compare=fetchAQA(directory,key.replace(directory+"\\",""))
         compareSize=compare.shape[0]-1
         values[key] = DTWDist(base,baseSize,compare,compareSize)
     
