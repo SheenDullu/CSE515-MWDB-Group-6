@@ -1,5 +1,7 @@
-from Task0 import task0a, task0b
+import Utilities
 import task1
+from Task0 import task0a, task0b
+
 
 def main():
     while True:
@@ -13,6 +15,7 @@ def main():
             window_length = int(input("Enter window length(w): \n"))
             shift_length = int(input("Enter shift length(s): \n"))
             resolution = int(input("Enter resolution (r): \n"))
+            Utilities.store_directory(folder_directory)
             task0a(folder_directory, window_length, shift_length, resolution)
             print("########## Completed Task 1 ##########")
         elif task == '0b':
