@@ -1,13 +1,11 @@
 import glob
 import re
 
-import numpy as np
 import pandas as pd
 
 import Utilities
+import dtw
 
-
-import time
 
 def printTop10Values(similarity_measure):
     i = 1
@@ -122,8 +120,11 @@ def main():
         task_input = input("What Task  do you want to perform: (enter 0 to exit)\n")
         task = int(task_input)
         if task == 6:
-            editDistance(r'C:\Class\CSE515 Multimedia\3_class_gesture_data', '278')
+            editDistance(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data', '278')
             print("########## Completed Edit Distance ##########")
+        if task == 7:
+            dtw.dynamicTimeWarping(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data', '278')
+            print("########## Completed DTW ##########")
         if task == 1:
             # dotProduct(directory, gesture, vector_model)
             dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data', '570', 'tfidf')
