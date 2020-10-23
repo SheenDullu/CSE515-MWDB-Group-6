@@ -183,11 +183,11 @@ def main():
         if task == 6:
             editDistance(r'C:\Class\CSE515 Multimedia\3_class_gesture_data', '1')
             print("########## Completed Edit Distance ##########")
-        if task == 1:
+        elif task == 1:
             # dotProduct(directory, gesture, vector_model)
             dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data', '570', 'tfidf')
             print("########## Completed Dot Product ##########")
-        if task == 0:
+        elif task == 0:
             print("Thank you. Bye")
             break
 
