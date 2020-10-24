@@ -3,22 +3,22 @@ import csv
 import pandas as pd
 from sklearn.decomposition import NMF, TruncatedSVD
 
-from GestureGestureMatrix import dotProduct, editDistance
+from GestureGestureMatrix import dotProduct
 
 
 def performSVD(gesture_gesture_matrix, p, directory):
     svd = TruncatedSVD(n_components=p)
     svd.fit(gesture_gesture_matrix)
     features = getComponents(gesture_gesture_matrix, svd, p)
-    writeToFile(directory + '\\task3a_svd.wrd', features)
+    writeToFile(directory + '\\task3a_svd.csv', features)
     print("***** Latent Feature, Gesture and its score are in task3b_svd.wrd *****")
 
 
 def performNMF(gesture_gesture_matrix, p, directory):
-    nmf = NMF(n_components=p, max_iter=3000)
+    nmf = NMF(n_components=p, max_iter=4000)
     nmf.fit(gesture_gesture_matrix)
     features = getComponents(gesture_gesture_matrix, nmf, p)
-    writeToFile(directory + '\\task3b_nmf.wrd', features)
+    writeToFile(directory + '\\task3b_nmf.csv', features)
     print("***** Latent Feature, Gesture and its score are in task3b_nmf.wrd *****")
 
 
@@ -46,32 +46,35 @@ def main():
         task = int(input("Press 1 for performing SVD on Gesture Gesture Matrix \n"
                          "Press 2 for performing NMF on Gesture Gesture Matrix \n"))
         p = int(input("Number of principle components to use: "))
-        print("List of a Gesture Gesture Matrix:")
-        print('Enter 1 for Dot Product')
-        print('Enter 2 for PCA')
-        print('Enter 3 for SVD')
-        print('Enter 4 for NMF')
-        print('Enter 5 for LDA')
-        print('Enter 6 for Edit Distance')
-        print('Enter 7 for DTW')
-        gesture_model = int(input("Select a Gesture Gesture Matrix:\n"))
-        print("Creating Gesture-Gesture matrix")
-        if gesture_model == 1:
-            gesture_gesture_matrix = dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
-            print("Created similarity matrix")
-        if gesture_model == 6:
-            gesture_gesture_matrix = editDistance(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
-            print("Created similarity matrix")
-        if gesture_model == 0:
-            print("Thank you. Bye")
-            break
+        while True:
+            print("List of a Gesture Gesture Matrix:")
+            print('Enter 1 for Dot Product\nEnter 2 for PCA\nEnter 3 for SVD')
+            print('Enter 4 for NMF\nEnter 5 for LDA')
+            print('Enter 6 for Edit Distance\nEnter 7 for DT\nEnter 0 to exit: \n"')
+            gesture_model = int(input("Select a Gesture Gesture Matrix:\n"))
+            print("Creating Gesture-Gesture matrix")
+            if gesture_model == 1:
+                gesture_gesture_matrix = dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
+            elif gesture_model == 6:
+                # gesture_gesture_matrix = editDistance(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
+                gesture_gesture_matrix = pd.read_csv('editDistanceMatrix.csv', index_col=0)
+            elif gesture_model == 7:
+                # gesture_gesture_matrix = DTWMatrix(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
+                gesture_gesture_matrix = pd.read_csv('dtwDistanceMatrix.csv', index_col=0)
+            elif gesture_model == 0:
+                break
 
-        if task == 1:
-            print("Performing SVD...")
-            performSVD(gesture_gesture_matrix, p, r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
-        elif task == 2:
-            print("Performing NMF...")
-            performNMF(gesture_gesture_matrix, p, r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
+            if task == 1:
+                print("Performing SVD...")
+                performSVD(gesture_gesture_matrix, p, r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
+            elif task == 2:
+                print("Performing NMF...")
+                performNMF(gesture_gesture_matrix, p, r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
+        out = int(input("Press 1 to continue\nPress 0 to exit Task 3\n"))
+        if out == 0:
+            break
+        elif out == 1:
+            continue
 
 
 if __name__ == '__main__':
