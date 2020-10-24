@@ -49,7 +49,6 @@ def calculating_nmf(k, vector, unique_word_dicts, datadir):
         for j in range(len(unique_word_dicts)):
             word_writer.writerow([loading_scores.iloc[0,j],sorted_values[j]])
     word_file.close()
-            word_writer.writerow([loading_scores.iloc[0, j], sorted_values[j]])
     print("Printed word and score file for NMF")
     pickle.dump(nmf,open(datadir + "\model_nmf.pkl","wb"))
     print("NMF dumped")
@@ -79,7 +78,6 @@ def calculating_pca(k, vector, unique_word_dicts, datadir):
         for j in range(len(unique_word_dicts)):
             word_writer.writerow(["Latent feature " + str(k+1),loading_scores.iloc[0,j],sorted_values[j]])
     word_file.close()
-            word_writer.writerow([loading_scores.iloc[0, j], sorted_values[j]])
     print("Printed word and score file for PCA")
     pickle.dump(pca,open(datadir + "\model_pca.pkl","wb"))
     print("PCA dumped")
@@ -108,7 +106,6 @@ def calculating_svd(k, vector, unique_word_dicts, datadir):
         for j in range(len(unique_word_dicts)):
             word_writer.writerow([loading_scores.iloc[0,j],sorted_values[j]])
     word_file.close()
-            word_writer.writerow([loading_scores.iloc[0, j], sorted_values[j]])
     print("Printed word and score file for SVD")
     pickle.dump(svd,open(datadir + "\model_svd.pkl","wb"))
     print("SVD dumped")
@@ -142,10 +139,7 @@ def calculating_lda(k, vector, unique_word_dicts, datadir):
     word_writer = csv.writer(word_file, delimiter=',')
     for i in range(len(lda_data)):
         word_writer.writerow(lda_data[i])
-    word_file.close() 
-
-            word_writer.writerow([loading_scores.iloc[0, j], sorted_values[j]])
-    print("Printed word and score file for LDA")
+    word_file.close()
 
 
 def main():
