@@ -1,8 +1,6 @@
 import csv
-import pickle
-# pd.read_csv("F:\mwdb\data")
-# datadir = "F:\mwdb\data"
 import glob
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -17,8 +15,7 @@ def reading_tf(datadir):
     all_files = glob.glob(datadir + "/tf_*")
     all_files.sort(key=lambda x: int((x.split('\\')[-1]).split('.')[0].split('_')[-1]))
     for file_ in all_files:
-        data = pd.read_csv(file_, header=None)
-        tf.append(list(data.iloc[0]))
+        tf.append(Utilities.getAVector(file_))
     tf = np.asarray(tf)
     return tf
 
@@ -28,14 +25,13 @@ def reading_tfidf(datadir):
     all_files = glob.glob(datadir + "/tfidf_*")
     all_files.sort(key=lambda x: int((x.split('\\')[-1]).split('.')[0].split('_')[-1]))
     for file_ in all_files:
-        data = pd.read_csv(file_, header=None)
-        tfidf.append(list(data.iloc[0]))
+        tfidf.append(Utilities.getAVector(file_))
     tfidf = np.asarray(tfidf)
     return tfidf
 
 
 def calculating_nmf(k, vector, unique_word_dicts, datadir):
-    nmf = NMF(n_components=k)
+    nmf = NMF(n_components=k, max_iter=1000)
     nmf.fit(vector)
     nmf_data = nmf.transform(vector)
 
@@ -47,17 +43,16 @@ def calculating_nmf(k, vector, unique_word_dicts, datadir):
         loading_scores.sort_index(axis=1, ascending=False, inplace=True)
         sorted_values = list(loading_scores.columns)
         for j in range(len(unique_word_dicts)):
-            word_writer.writerow([loading_scores.iloc[0,j],sorted_values[j]])
+            word_writer.writerow([loading_scores.iloc[0, j], sorted_values[j]])
     word_file.close()
     print("Printed word and score file for NMF")
-    pickle.dump(nmf,open(datadir + "\model_nmf.pkl","wb"))
+    pickle.dump(nmf, open(datadir + "\model_nmf.pkl", "wb"))
     print("NMF dumped")
     word_file = open(datadir + '\latent_features.txt', mode='w')
     word_writer = csv.writer(word_file, delimiter=',')
     for i in range(len(nmf_data)):
         word_writer.writerow(nmf_data[i])
     word_file.close()
-
 
 
 def calculating_pca(k, vector, unique_word_dicts, datadir):
@@ -76,10 +71,10 @@ def calculating_pca(k, vector, unique_word_dicts, datadir):
         sorted_values = list(loading_scores.columns)
         # sorted_loading_scores = list(loading_scores.sort_values(ascending=False))
         for j in range(len(unique_word_dicts)):
-            word_writer.writerow(["Latent feature " + str(k+1),loading_scores.iloc[0,j],sorted_values[j]])
+            word_writer.writerow(["Latent feature " + str(k + 1), loading_scores.iloc[0, j], sorted_values[j]])
     word_file.close()
     print("Printed word and score file for PCA")
-    pickle.dump(pca,open(datadir + "\model_pca.pkl","wb"))
+    pickle.dump(pca, open(datadir + "\model_pca.pkl", "wb"))
     print("PCA dumped")
     word_file = open(datadir + '\latent_features.txt', mode='w')
     word_writer = csv.writer(word_file, delimiter=',')
@@ -87,7 +82,6 @@ def calculating_pca(k, vector, unique_word_dicts, datadir):
         word_writer.writerow(pca_data[i])
     word_file.close()
     # pca_reload = pickle.load(open(datadir + "\pca.pkl",'rb'))
-
 
 
 def calculating_svd(k, vector, unique_word_dicts, datadir):
@@ -102,12 +96,11 @@ def calculating_svd(k, vector, unique_word_dicts, datadir):
         loading_scores.loc[0] = unique_word_dicts
         loading_scores.sort_index(axis=1, ascending=False, inplace=True)
         sorted_values = list(loading_scores.columns)
-        # sorted_loading_scores = list(loading_scores.sort_values(ascending=False))
         for j in range(len(unique_word_dicts)):
-            word_writer.writerow([loading_scores.iloc[0,j],sorted_values[j]])
+            word_writer.writerow([loading_scores.iloc[0, j], sorted_values[j]])
     word_file.close()
     print("Printed word and score file for SVD")
-    pickle.dump(svd,open(datadir + "\model_svd.pkl","wb"))
+    pickle.dump(svd, open(datadir + "\model_svd.pkl", "wb"))
     print("SVD dumped")
     word_file = open(datadir + '\latent_features.txt', mode='w')
     word_writer = csv.writer(word_file, delimiter=',')
@@ -130,10 +123,10 @@ def calculating_lda(k, vector, unique_word_dicts, datadir):
         sorted_values = list(loading_scores.columns)
         # sorted_loading_scores = list(loading_scores.sort_values(ascending=False))
         for j in range(len(unique_word_dicts)):
-            word_writer.writerow([loading_scores.iloc[0,j],sorted_values[j]])
+            word_writer.writerow([loading_scores.iloc[0, j], sorted_values[j]])
     word_file.close()
     print("Printed word and score file for LDA")
-    pickle.dump(lda,open(datadir + "\model_lda.pkl","wb"))   
+    pickle.dump(lda, open(datadir + "\model_lda.pkl", "wb"))
     print("LDA dumped")
     word_file = open(datadir + '\latent_features.txt', mode='w')
     word_writer = csv.writer(word_file, delimiter=',')
@@ -143,56 +136,33 @@ def calculating_lda(k, vector, unique_word_dicts, datadir):
 
 
 def main():
-    flag = 0
-    directory = input("Enter the directory containing all the components, words and vectors: ")
-    k = int(input("Enter how many top latent features you want: "))
-    vector_model = input("Enter the vector model you want to use \nEnter 1 for TF or Enter 2 for TF-IDF: ")
-
     while True:
-        if vector_model == "1":
-            print("Reading TF vectors...")
-            tf = reading_tf(directory)
-            flag = 1
-            break
-        elif vector_model == "2":
-            print("Reading TFIDF vectors...")
-            tfidf = reading_tfidf(directory)
-            flag = 2
-            break
-        elif vector_model == "0":
-            exit()
+        print("Build the PCA, SVD, NMF, LDA word scores")
+        directory = input("Enter the directory containing all the components, words and vectors: ")
+        # directory = Utilities.read_directory()
+        k = int(input("Enter how many top latent features you want: "))
+        vector_model = int(input("Enter the vector model you want to use \nEnter 1 for TF or Enter 2 for TF-IDF: "))
+        model = list()
+        if vector_model == 1:
+            model = reading_tf(directory)
+        elif vector_model == 2:
+            model = reading_tfidf(directory)
 
-    unique_word_dicts = Utilities.getAllUniqueWords(directory)
-
-    user_option = input(
-        " Enter 1 for PCA\n Enter 2 for SVD \n Enter 3 for NMF \n Enter 4 for LDA \n Enter 0 to exit: \n")
-    while True:
-        if user_option == "1":
-            if flag == 1:
-                calculating_pca(k, tf, unique_word_dicts, directory)
-            else:
-                calculating_pca(k, tfidf, unique_word_dicts, directory)
-            break
-        elif user_option == "2":
-            if flag == 1:
-                calculating_svd(k, tf, unique_word_dicts, directory)
-            else:
-                calculating_svd(k, tfidf, unique_word_dicts, directory)
-            break
-        elif user_option == "3":
-            if flag == 1:
-                calculating_nmf(k, tf, unique_word_dicts, directory)
-            else:
-                calculating_nmf(k, tfidf, unique_word_dicts, directory)
-            break
-        elif user_option == "4":
-            if flag == 1:
-                calculating_lda(k, tf, unique_word_dicts, directory)
-            else:
-                calculating_lda(k, tfidf, unique_word_dicts, directory)
-            break
-        elif user_option == "0":
-            exit()
+        unique_word_dicts = Utilities.getAllUniqueWords(directory)
+        while True:
+            user_option = int(input("Enter 1 for PCA\nEnter 2 for SVD \n"
+                                    "Enter 3 for NMF \nEnter 4 for LDA \n"
+                                    "Enter 0 to exit: \n"))
+            if user_option == 1:
+                calculating_pca(k, model, unique_word_dicts, directory)
+            elif user_option == 2:
+                calculating_svd(k, model, unique_word_dicts, directory)
+            elif user_option == 3:
+                calculating_nmf(k, model, unique_word_dicts, directory)
+            elif user_option == 4:
+                calculating_lda(k, model, unique_word_dicts, directory)
+            elif user_option == 0:
+                exit()
 
 
 if __name__ == '__main__':

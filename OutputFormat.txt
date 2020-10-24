@@ -6,6 +6,8 @@ Task 0b:
 A comma separated vector.
 
 Task 1:
-Word and score to the latent feature
+latent feature, word, score
 
 
+Task 3:
+latent feature, gesture, score

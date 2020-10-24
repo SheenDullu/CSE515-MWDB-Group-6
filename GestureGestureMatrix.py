@@ -5,37 +5,33 @@ import numpy as np
 import pandas as pd
 
 import Utilities
-
 import dtw
-import numpy as np
-import glob
-import pandas as pd
 
 
 def dotProduct(directory):
     all_vectors = pd.DataFrame.from_dict(Utilities.getAllVectors(directory, 'tf'), orient='index')
     dot_product = all_vectors.dot(all_vectors.T)
-    dot_product.to_csv('dot_product_matrix')
+    dot_product.to_csv('dotProductMatrix.csv')
     # to read
     # temp = pd.read_csv('dot_product_matrix', index_col=0)
     return dot_product
 
 
 def DTWMatrix(directory):
-    keys=glob.glob(directory+"/*.wrd")
-    keys=[key.replace(directory+"\\","") for key in keys]
-    matrix=np.empty([len(keys),len(keys)])
+    keys = glob.glob(directory + "/*.wrd")
+    keys.sort(key=lambda var: [int(x) if x.isdigit() else x for x in re.split('(\d+)', var)])
+    keys = [key.replace(directory + "\\", "") for key in keys]
+    matrix = np.empty([len(keys), len(keys)])
     for key1 in keys:
-        base=dtw.fetchAQA(directory,key1)
-        baseSize=base.shape[0]-1
+        base = dtw.fetchAQA(directory, key1)
+        baseSize = base.shape[0] - 1
         for key2 in keys:
-            compare=dtw.fetchAQA(directory,key2)
-            compareSize=compare.shape[0]-1
-            matrix[keys.index(key1),keys.index(key2)] = dtw.DTWDist(base,baseSize,compare,compareSize)
-    df=pd.DataFrame(matrix,index=keys,columns=keys)
+            compare = dtw.fetchAQA(directory, key2)
+            compareSize = compare.shape[0] - 1
+            matrix[keys.index(key1), keys.index(key2)] = dtw.DTWDist(base, baseSize, compare, compareSize)
+    df = pd.DataFrame(matrix, index=keys, columns=keys)
     df.to_csv("dtwDistanceMatrix.csv")
-# EXAMPLE RUN
-# DTWMatrix("Data")
+    return df
 
 
 def editDistance(directory):
@@ -52,21 +48,16 @@ def editDistance(directory):
             editVal = 0
             for key in allwrdfiles[i]:
                 # if (counter >30 and counter<60):
-
                 numArr = []
                 numArr2 = []
                 for wrd in allwrdfiles[i][key]:
                     numArr.append(wrd)
                 for wrd in allwrdfiles[j][key]:
                     numArr2.append(wrd)
-
-                if (int(key[1]) in important_sensors):
+                if int(key[1]) in important_sensors:
                     multiplier = 2
-
-
                 else:
                     multiplier = 0.5
-
                 editVal += multiplier * Utilities.editDistanceFunc(numArr, numArr2)
 
             editValueMatrix[i][j] = editVal
@@ -82,6 +73,7 @@ def editDistance(directory):
     df_norm.to_csv('editDistanceMatrix.csv')
     df.to_csv('editDistanceMatrixOriginal.csv')
     return df_norm
+
 
 if __name__ == '__main__':
     #dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
