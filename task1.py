@@ -138,8 +138,8 @@ def calculating_lda(k, vector, unique_word_dicts, datadir):
 def main():
     while True:
         print("Build the PCA, SVD, NMF, LDA word scores")
-        directory = input("Enter the directory containing all the components, words and vectors: ")
-        # directory = Utilities.read_directory()
+        # directory = input("Enter the directory containing all the components, words and vectors: ")
+        directory = Utilities.read_directory()
         k = int(input("Enter how many top latent features you want: "))
         vector_model = int(input("Enter the vector model you want to use \nEnter 1 for TF or Enter 2 for TF-IDF: "))
         model = list()
@@ -162,7 +162,12 @@ def main():
             elif user_option == 4:
                 calculating_lda(k, model, unique_word_dicts, directory)
             elif user_option == 0:
-                exit()
+                break
+        out = int(input("Press 1 to continue\nPress 0 to exit Task 1\n"))
+        if out == 0:
+            break
+        elif out == 1:
+            continue
 
 
 if __name__ == '__main__':
