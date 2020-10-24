@@ -59,6 +59,7 @@ def replace(s1,s2):
     #Denominator has to be changed
     return (dif)/(666-111)
 
+
 def editDistance(directory, file):
     wrdfile = Utilities.fetchWordsFromFile(directory, file)
     allwrdfiles = Utilities.fetchAllWordsFromFile(directory)
@@ -78,11 +79,11 @@ def editDistance(directory, file):
             for wrd in file[key]:
                 numArr2.append(wrd)
             if int(key[1]) in important_sensors:
-                multiplier=2
+                multiplier = 2
             else:
-                multiplier=0.5
+                multiplier = 0.5
             editVal += multiplier * Utilities.editDistanceFunc(numArr, numArr2)
-        counter+=1
+        counter += 1
         editValues.append(editVal)
 
     vals = sorted(range(len(editValues)), key=lambda k: editValues[k])
@@ -120,9 +121,8 @@ def main():
             elif task == 0:
                 print("Thank you.")
                 break
-        option = int(input("Press 1 to Continue\nPress 0 to exit"))
+        option = int(input("Press 1 to Continue\nPress 0 to exit Task 2"))
         if option == 0:
-            print("Thank you.")
             break
         elif option == 1:
             continue
