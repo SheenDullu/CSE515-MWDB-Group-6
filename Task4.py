@@ -26,12 +26,13 @@ def task4a(directory):
 
     return result
 
-def task4c():
+def task4c(directory):
 
-    data = pd.read_csv(r'C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\task3a_svd.wrd', header=None,
+    data = pd.read_csv(directory, header=None,
                        names=['features', 'file', 'score'])
 
-    for f in range(1, 16):
+    num_features=data['features'].max()
+    for f in range(1, num_features+1):
         temp = data[data['features'] == f].sort_values(['file']).drop(['features', 'file'], axis=1).to_numpy()
 
         if (f == 1):
@@ -43,4 +44,6 @@ def task4c():
     k = trial.kmeans()
 
     print(k)
+
+
 
