@@ -6,6 +6,11 @@ import pandas as pd
 
 import Utilities
 
+import dtw
+import numpy as np
+import glob
+import pandas as pd
+
 
 def dotProduct(directory):
     all_vectors = pd.DataFrame.from_dict(Utilities.getAllVectors(directory, 'tf'), orient='index')
@@ -14,6 +19,23 @@ def dotProduct(directory):
     # to read
     # temp = pd.read_csv('dot_product_matrix', index_col=0)
     return dot_product
+
+
+def DTWMatrix(directory):
+    keys=glob.glob(directory+"/*.wrd")
+    keys=[key.replace(directory+"\\","") for key in keys]
+    matrix=np.empty([len(keys),len(keys)])
+    for key1 in keys:
+        base=dtw.fetchAQA(directory,key1)
+        baseSize=base.shape[0]-1
+        for key2 in keys:
+            compare=dtw.fetchAQA(directory,key2)
+            compareSize=compare.shape[0]-1
+            matrix[keys.index(key1),keys.index(key2)] = dtw.DTWDist(base,baseSize,compare,compareSize)
+    df=pd.DataFrame(matrix,index=keys,columns=keys)
+    df.to_csv("dtwDistanceMatrix.csv")
+# EXAMPLE RUN
+# DTWMatrix("Data")
 
 
 def editDistance(directory):

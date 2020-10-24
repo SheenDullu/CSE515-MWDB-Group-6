@@ -18,9 +18,9 @@ def dynamicTimeWarping(directory,file):
     rankings={k:v for k,v in sorted(values.items(),key=lambda x:x[1])}
     output=list(rankings.items())
     print()
-    print("-------------------------------------")
-    print("File            |        DTW Distance")
-    print("-------------------------------------")
+    print("---------------------------------")
+    print("      File      |  DTW Distance  ")
+    print("---------------------------------")
     for i in range(10):
         print(output[i][0]+"\t|"+"\t"+str(output[i][1]))
 
