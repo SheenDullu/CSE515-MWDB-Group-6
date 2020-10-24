@@ -59,6 +59,7 @@ def editDistance(directory):
     df_norm = 1 - df_norm
     df_norm.to_csv('editDistanceMatrix.csv')
     df.to_csv('editDistanceMatrixOriginal.csv')
+    return df_norm
 
 if __name__ == '__main__':
     #dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
