@@ -23,9 +23,10 @@ def editDistance(directory):
     all_files.sort(key=lambda var: [int(x) if x.isdigit() else x for x in re.split('(\d+)', var)])
 
     important_sensors = set([5, 6, 7, 8, 9, 10, 11, 12])
-    editValueMatrix = np.zeros([len(allwrdfiles) - 1, len(allwrdfiles) - 1], dtype=int)
-    for i in range(len(allwrdfiles) - 1):
-        for j in range(i + 1, len(allwrdfiles) - 1):
+    editValueMatrix = np.zeros([len(allwrdfiles), len(allwrdfiles)], dtype=float)
+    file_names = []
+    for i in range(len(allwrdfiles)):
+        for j in range(i + 1, len(allwrdfiles)):
             editVal = 0
             for key in allwrdfiles[i]:
                 # if (counter >30 and counter<60):
@@ -49,10 +50,16 @@ def editDistance(directory):
             editValueMatrix[i][j] = editVal
             editValueMatrix[j][i] = editVal
 
+        file_names.append(all_files[i].split("\\")[-1].split(".")[0] + ".txt")
         print("File " + all_files[i].split("\\")[-1].split(".")[0] + " done")
-    np.save('editDistanceMatrix.npy', editValueMatrix)
-
+    df = pd.DataFrame(editValueMatrix, columns=file_names, index=file_names)
+    df_norm = df.subtract(df.min(axis=1), axis=0) \
+        .divide(df.max(axis=1) - df.min(axis=1), axis=0) \
+        .combine_first(df)
+    df_norm = 1 - df_norm
+    df_norm.to_csv('editDistanceMatrix.csv')
+    df.to_csv('editDistanceMatrixOriginal.csv')
 
 if __name__ == '__main__':
-    dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
-    # editDistance(r'D:\ASU\Courses\MWDB\Project\Phase 2\Code\data')
+    #dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
+    editDistance(r'C:\Class\CSE515 Multimedia\3_class_gesture_data')
