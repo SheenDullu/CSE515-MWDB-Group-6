@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import math
-
+import kmeans
 
 def task4a(directory):
     svd=pd.read_csv(directory,header=None,names=['features','file','score'])
@@ -25,3 +25,22 @@ def task4a(directory):
     result=(result[result[:,0].argsort()])
 
     return result
+
+def task4c():
+
+    data = pd.read_csv(r'C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\task3a_svd.wrd', header=None,
+                       names=['features', 'file', 'score'])
+
+    for f in range(1, 16):
+        temp = data[data['features'] == f].sort_values(['file']).drop(['features', 'file'], axis=1).to_numpy()
+
+        if (f == 1):
+            result = temp
+        else:
+            result = np.concatenate([result, temp], axis=1)
+
+    trial = kmeans.Cluster(result, 3, 1)
+    k = trial.kmeans()
+
+    print(k)
+
