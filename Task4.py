@@ -45,5 +45,75 @@ def task4c(directory):
 
     print(k)
 
+import sys
 
+def task4d():
+    print("Enter [1] for dot product")
+    print("Enter [2] for PCA")
+    print("Enter [3] for SVD")
+    print("Enter [4] for NMF")
+    print("Enter [5] for LDA")
+    print("Enter [6] for edit distance")
+    print("Enter [7] for DTW")
+    gg=input("Which gesture-gesture matrix would you like to use: ")
+    k=input("How many clusters would you like to compute: ")
 
+    if(gg=="1"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="2"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="3"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="4"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="5"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="6"):
+        ggMatrix=pd.read_csv("editDistanceMatrix.csv")
+    elif(gg=="7"):
+        ggMatrix=pd.read_csv("dtwDistanceMatrix.csv",index_col=[0])
+
+    threshold = 0.5                                         # IMPLEMENT SEPARATE THRESHOLD FUNCTION
+    cols=list(ggMatrix.columns)                             #
+    for col in cols:                                        #
+        ggMatrix.loc[ggMatrix[col] > threshold, col] = 0    #
+
+    dMatrix= pd.DataFrame(index=cols,columns=cols)
+    dMatrix=dMatrix.fillna(0)
+
+    for col in cols:
+        degree=0
+        values=ggMatrix[col]
+        for val in values:
+            if val > 0:
+                degree+=1
+        dMatrix.loc[col,col] = degree
+    
+    lMatrix=dMatrix.subtract(ggMatrix)
+    L = lMatrix.to_numpy()
+    eVectors=np.linalg.eig(L)
+    values=[]
+    vectors=np.empty([len(cols),int(k)])
+    for i in range(int(k)):
+        max = np.amax(eVectors[0])
+        values.append(max)
+        loc=np.where(eVectors[0] == max)[0][0]
+        vectors[:,i] = eVectors[1][:,loc]
+        eVectors[0][loc] = -sys.maxsize - 1
+    
+    x=kmeans.Cluster(vectors,int(k),1)
+    x.kmeans()
+    output = x.cluster_obj
+
+    for i in range(1,int(k)+1):
+        for j in range(len(output[i])):
+            output[i][j] = cols[output[i][j]]
+
+    for i in range(1,int(k)+1):
+        print()
+        print()
+        print("Cluster "+str(i))
+        print("----------")
+        for j in range(len(output[i])):
+            print(output[i][j])
+    print()
