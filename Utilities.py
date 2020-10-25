@@ -89,6 +89,17 @@ def fetchAllWordsFromFile(directory):
         wordArrayDict.append(wordDict)
     return wordArrayDict
 
+def replace(s1,s2):
+    s1=s1.split(' ')
+    s2=s2.split(' ')
+
+    diff=0
+
+    for i in range(len(s1)):
+        # Denominator has to be changed
+        diff += abs(int(s1[i]) -int(s2[i]))/(6-1)
+
+    return diff
 
 def editDistanceComp(matrix, p, q, P, Q, r, i, d, con):
     replaceCost = 2
@@ -120,8 +131,7 @@ def editDistanceComp(matrix, p, q, P, Q, r, i, d, con):
     if (matrix[p - 1, q] == -1):
         matrix[p - 1, q] = editDistanceComp(matrix, p - 1, q, P, Q, r, i + 1, d, con)
 
-    # print(r,i,d)
-    return min(matrix[p - 1, q] + insertCost, matrix[p, q - 1] + deleteCost, matrix[p - 1, q - 1] + 1)
+    return min(matrix[p - 1, q] + insertCost, matrix[p, q - 1] + deleteCost, matrix[p - 1, q - 1] + 1*replace(P[p],Q[q]))
 
 
 def editDistanceFunc(P, Q):
