@@ -5,6 +5,7 @@ import pandas as pd
 
 import Utilities
 import dtw
+import task2_pinaki
 
 
 def printTop10Values(similarity_measure):
@@ -21,30 +22,6 @@ def dotProduct(directory, file, model):
     dot_product = all_vectors.dot(gesture_vector)
     dot_product = dot_product.sort_values(ascending=False)
     printTop10Values(dot_product[:11])
-
-#
-# def editDistanceFunc(P, Q):
-#     replaceCost = 1
-#     insertCost = 1
-#     deleteCost = 1
-#     if len(P) < len(Q):
-#         P, Q, = Q, P
-#     i = len(P) + 1
-#     j = len(Q) + 1
-#     matrix = np.zeros((i, j))
-#
-#     matrix[:, 0] = np.arange(0,i)
-#     matrix[0,:] = np.arange(0,j)
-#
-#     for x in range(1, i):
-#         for y in range(1, j):
-#             if P[x-1] == Q[y-1]:
-#                 matrix[x, y] = matrix[x-1, y-1]
-#             else:
-#                 matrix[x, y] = min(matrix[x-1, y] + insertCost, matrix[x, y-1] + deleteCost, matrix[x-1, y-1] +
-#                                    replaceCost)
-#     return matrix[i - 1, j - 1]
-
 
 
 def editDistance(directory, file):
@@ -75,7 +52,7 @@ def editDistance(directory, file):
 
     vals = sorted(range(len(editValues)), key=lambda k: editValues[k])
 
-    for i in range(0, 31 ):
+    for i in range(0, 11):
         print(str(i+1) + " . Gesture " + all_files[vals[i]].split("\\")[-1].split(".")[0] + " , " + str(editValues[vals[i]]))
 
 
@@ -95,12 +72,16 @@ def main():
                 dotProduct(directory, gesture, vector_model)
             elif task == 2:
                 print("PCA")
+                task2_pinaki.main(2,vector_model,gesture)
             elif task == 3:
                 print("SVD")
+                task2_pinaki.main(3,vector_model,gesture)
             elif task == 4:
                 print("NMF")
+                task2_pinaki.main(4,vector_model,gesture)
             elif task == 5:
                 print("LDA")
+                task2_pinaki.main(5,vector_model,gesture)
             elif task == 6:
                 editDistance(directory, gesture)
             elif task == 7:
@@ -116,5 +97,5 @@ def main():
 
 
 if __name__ == '__main__':
-    # main()
-    editDistance(r'C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\test', '275')
+    main()
+    # editDistance(r'C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\test', '275')
