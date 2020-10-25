@@ -1,18 +1,8 @@
-import pandas as pd
-import numpy as np
-from sklearn.decomposition import PCA,NMF,TruncatedSVD
-from sklearn.decomposition import LatentDirichletAllocation as LDA
-from scipy.spatial import distance
 # from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
-from sklearn import preprocessing
 import glob
-import matplotlib.pyplot as plt
-import os
-import csv
 import pickle
+
 import Utilities
-import Task0
-import math
 
 
 def degree_of_membership(model,datadir):
@@ -38,7 +28,7 @@ def degree_of_membership(model,datadir):
 
 def main():
     bins = dict()
-    datadir = input("Enter the directory containing all the components, words and vectors: ")
+    datadir = Utilities.read_directory()
     user_input = input("Enter 1 for task 4a and 2 for task 4b: ")
     if user_input == '1':
         svd_reload = pickle.load(open(datadir + "\model_svd_task3.pkl",'rb'))

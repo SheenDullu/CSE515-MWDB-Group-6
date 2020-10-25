@@ -1,8 +1,10 @@
-import pandas as pd
-import numpy as np
-import math
-import kmeans
 import sys
+
+import numpy as np
+import pandas as pd
+
+import kmeans
+
 
 def task4a(directory):
     svd=pd.read_csv(directory,header=None,names=['features','file','score'])
@@ -58,15 +60,15 @@ def task4d():
     k=input("How many clusters would you like to compute: ")
 
     if(gg=="1"):
-        ggMatrix=pd.read_csv()
+        ggMatrix = pd.read_csv("dotProductMatrix.csv", index_col=0)
     elif(gg=="2"):
-        ggMatrix=pd.read_csv()
+        ggMatrix = pd.read_csv("similarity_matrix_pca.csv", index_col=0)
     elif(gg=="3"):
-        ggMatrix=pd.read_csv()
+        ggMatrix = pd.read_csv("similarity_matrix_svd.csv", index_col=0)
     elif(gg=="4"):
-        ggMatrix=pd.read_csv()
+        ggMatrix = pd.read_csv("similarity_matrix_nmf.csv", index_col=0)
     elif(gg=="5"):
-        ggMatrix=pd.read_csv()
+        ggMatrix = pd.read_csv("similarity_matrix_lda.csv", index_col=0)
     elif(gg=="6"):
         ggMatrix=pd.read_csv("editDistanceMatrix.csv",index_col=[0])
     elif(gg=="7"):
