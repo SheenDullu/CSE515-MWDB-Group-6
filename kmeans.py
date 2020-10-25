@@ -5,7 +5,7 @@ import pandas as pd
 
 class Cluster:
 
-    def __init__(self, data, k_, flag):
+    def __init__(self, data, k_):
 
         self.k = k_  # Value of K
         self.points = data  # Data
@@ -53,12 +53,13 @@ class Cluster:
                 if (min_distance > dist):
                     min_distance = dist
                     min_k = index_k
+            #if (self.points[index_point] not in self.centroids):
             self.cluster[min_k + 1].append(self.points[index_point])  # Append datapoint with min distance to centroid
 
     def initial_cluster(self):
         for i in range(self.k):
             self.cluster[i + 1] = []
-            self.cluster[i + 1].append(np.stack(self.centroids[i]))  # Initialise clusters with centroid
+            # self.cluster[i + 1].append(np.stack(self.centroids[i]))  # Initialise clusters with centroid
 
     def get_mean(self):
         new_mean = []
@@ -103,24 +104,3 @@ class Cluster:
 
         self.rewrite()
         return self.cluster_obj
-
-# data=pd.read_csv(r'C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\task3a_svd.wrd',header=None,names=['features','file','score'])
-#
-#
-# for f in range(1,16):
-#     temp = data[data['features']==f].sort_values(['file']).drop(['features','file'],axis=1).to_numpy()
-#
-#     if (f==1):
-#         result=temp
-#     else:
-#         result=np.concatenate([result,temp],axis=1)
-#
-#
-# trial=Cluster(result,3,1)
-# k=trial.kmeans()
-# print(k)
-
-
-
-
-
