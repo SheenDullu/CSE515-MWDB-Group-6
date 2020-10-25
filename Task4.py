@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import math
 import kmeans
+import sys
 
 def task4a(directory):
     svd=pd.read_csv(directory,header=None,names=['features','file','score'])
@@ -44,8 +45,6 @@ def task4c(directory):
     k = trial.kmeans()
 
     print(k)
-
-import sys
 
 def task4d():
     print("Enter [1] for dot product")
