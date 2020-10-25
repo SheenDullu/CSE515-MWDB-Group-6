@@ -205,5 +205,5 @@ def task0b(directory):
 
 
 if __name__ == '__main__':
-    task0a(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data', 3, 2, 4)
-    task0b(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
+    task0a(Utilities.read_directory(), 3, 3, 3)
+    task0b(Utilities.read_directory())

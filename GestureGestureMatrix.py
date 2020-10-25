@@ -10,11 +10,13 @@ import dtw
 
 def dotProduct(directory):
     all_vectors = pd.DataFrame.from_dict(Utilities.getAllVectors(directory, 'tf'), orient='index')
-    dot_product = all_vectors.dot(all_vectors.T)
-    dot_product.to_csv('dotProductMatrix.csv')
-    # to read
-    # temp = pd.read_csv('dot_product_matrix', index_col=0)
-    return dot_product
+    df = all_vectors.dot(all_vectors.T)
+    df_norm = df.subtract(df.min(axis=1), axis=0) \
+        .divide(df.max(axis=1) - df.min(axis=1), axis=0) \
+        .combine_first(df)
+    df_norm = 1 - df_norm
+    df_norm.to_csv('dotProductMatrix.csv')
+    return df_norm
 
 
 def DTWMatrix(directory):
@@ -30,7 +32,11 @@ def DTWMatrix(directory):
             compareSize = compare.shape[0] - 1
             matrix[keys.index(key1), keys.index(key2)] = dtw.DTWDist(base, baseSize, compare, compareSize)
     df = pd.DataFrame(matrix, index=keys, columns=keys)
-    df.to_csv("dtwDistanceMatrix.csv")
+    df_norm = df.subtract(df.min(axis=1), axis=0) \
+        .divide(df.max(axis=1) - df.min(axis=1), axis=0) \
+        .combine_first(df)
+    df_norm = 1 - df_norm
+    df_norm.to_csv("dtwDistanceMatrix.csv")
     return df
 
 
