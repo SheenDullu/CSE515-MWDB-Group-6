@@ -69,7 +69,7 @@ def task4d():
     elif(gg=="5"):
         ggMatrix=pd.read_csv()
     elif(gg=="6"):
-        ggMatrix=pd.read_csv("editDistanceMatrix.csv")
+        ggMatrix=pd.read_csv("editDistanceMatrix.csv",index_col=[0])
     elif(gg=="7"):
         ggMatrix=pd.read_csv("dtwDistanceMatrix.csv",index_col=[0])
 
@@ -101,7 +101,7 @@ def task4d():
         vectors[:,i] = eVectors[1][:,loc]
         eVectors[0][loc] = -sys.maxsize - 1
     
-    x=kmeans.Cluster(vectors,int(k),1)
+    x=kmeans.Cluster(vectors,int(k))
     x.kmeans()
     output = x.cluster_obj
 
@@ -117,3 +117,9 @@ def task4d():
         for j in range(len(output[i])):
             print(output[i][j])
     print()
+
+def main():
+    task4d()
+
+if __name__ == '__main__':
+    main()
