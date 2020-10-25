@@ -50,25 +50,56 @@ def task4c(directory):
 
     print(k)
 
+def task4d():
+    print("Enter [1] for dot product")
+    print("Enter [2] for PCA")
+    print("Enter [3] for SVD")
+    print("Enter [4] for NMF")
+    print("Enter [5] for LDA")
+    print("Enter [6] for edit distance")
+    print("Enter [7] for DTW")
+    gg=input("Which gesture-gesture matrix would you like to use: ")
+    k=input("How many clusters would you like to compute: ")
 
-def task4d(ggMatrix, k):
-    threshold = 0.5  # IMPLEMENT SEPARATE THRESHOLD FUNCTION
-    cols = list(ggMatrix.columns)  #
-    for col in cols:  #
-        ggMatrix.loc[ggMatrix[col] > threshold, col] = 0  #
+    if(gg=="1"):
+        ggMatrix=pd.read_csv("dotProductMatrix.csv",index_col=[0])
+    elif(gg=="2"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="3"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="4"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="5"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="6"):
+        ggMatrix=pd.read_csv("editDistanceMatrix.csv",index_col=[0])
+    elif(gg=="7"):
+        ggMatrix=pd.read_csv("dtwDistanceMatrix.csv",index_col=[0])
 
-    dMatrix = pd.DataFrame(index=cols, columns=cols)
-    dMatrix = dMatrix.fillna(0)
+    threshold(gg,ggMatrix)
+    # x = 0.5                                         # IMPLEMENT SEPARATE THRESHOLD FUNCTION
+    cols=list(ggMatrix.columns)                             #
+    # print(cols)
+    # for col in cols:                                        #
+    #     ggMatrix.loc[ggMatrix[col] > x, col] = 0    #
+
+    dMatrix=pd.DataFrame(index=cols,columns=cols)
+    dMatrix=dMatrix.fillna(0)
 
     for col in cols:
         degree = 0
         values = ggMatrix[col]
         for val in values:
             if val > 0:
-                degree += 1
-        dMatrix.loc[col, col] = degree
+                degree+=1
+        dMatrix.loc[col,col] = degree
+    
+    print(ggMatrix.shape)
+    print(dMatrix.shape)
+    # lMatrix=dMatrix.subtract(ggMatrix)
+    lMatrix=np.subtract(dMatrix,ggMatrix)
+    print(lMatrix.shape)
 
-    lMatrix = dMatrix.subtract(ggMatrix)
     L = lMatrix.to_numpy()
     eVectors = np.linalg.eig(L)
     values = []
@@ -91,12 +122,36 @@ def task4d(ggMatrix, k):
     for i in range(1, int(k) + 1):
         print()
         print()
-        print("Cluster " + str(i))
-        print("----------")
+        print("Cluster "+str(i))
+        print("---------")
         for j in range(len(output[i])):
             print(output[i][j])
     print()
 
+def threshold(option,matrix):
+    min=matrix.min().min()
+    max=matrix.max().max()
+    std=matrix.values.std(ddof=1)
+
+    if(option=="1"):
+        threshold=max-std
+        cols=list(matrix.columns)
+        for col in cols:
+            matrix.loc[matrix[col] < threshold, col] = 0
+    # elif(option=="2"):
+    # elif(option=="3"):
+    # elif(option=="4"):
+    # elif(option=="5"):
+    elif(option=="6"):
+        threshold=max-std
+        cols=list(matrix.columns)
+        for col in cols:
+            matrix.loc[matrix[col] < threshold, col] = 0           
+    elif(option=="7"):
+        threshold=min+std
+        cols=list(matrix.columns)
+        for col in cols:
+            matrix.loc[matrix[col] > threshold, col] = -1           # 0 is better in dtw so penalizing by setting values to -1 
 
 def main():
     while True:
