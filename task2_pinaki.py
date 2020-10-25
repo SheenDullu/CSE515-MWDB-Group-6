@@ -29,58 +29,6 @@ def getAllWords(directory):
                     words.append(word)
     return words
 
-def avg_std(df):
-    avg = df.apply(np.mean, axis=0)
-    std = df.apply(np.std, axis=0)
-    return avg, std
-
-def calculate_avg_std_sensor_wise(df):
-    tran_df = pd.DataFrame(df.T)
-    avg_temp, std_temp = avg_std(tran_df)
-    avg_amplitude = avg_temp.to_frame('avg')
-    std_deviation = std_temp.to_frame('std')
-    amp_std = pd.concat([avg_amplitude, std_deviation], axis=1)
-    return amp_std
-
-def normalizeSensorWise(df):
-    df_norm = df.subtract(df.min(axis=1), axis=0).multiply(2) \
-        .divide(df.max(axis=1) - df.min(axis=1), axis=0).subtract(1).combine_first(df)
-    return df_norm
-
-def quantization(df, bands):
-    mid_point = df.copy()
-    for band in bands:
-        df.mask((df >= band.lower_bound) & (df < band.upper_bound), band.index, inplace=True)
-    df.loc[:] = df.astype(int)
-    for band in bands:
-        mid_point.mask((mid_point >= band.lower_bound) & (mid_point < band.upper_bound), band.mid_point, inplace=True)
-    return df, mid_point
-
-def create_word_dictionary(avg_std_df, mid_point_df, quantized_data, directory, window_length, shift_length):
-    folder_name = directory.split("\\")[-1]
-    word_list = list()
-    for index, row in quantized_data.iterrows():
-        for i in range(0, quantized_data.shape[1], shift_length):
-            if i + window_length < quantized_data.shape[1]:
-                avg_q = mid_point_df.loc[index][i:i + window_length].tolist()
-                win = row[i:i + window_length].tolist()
-                pair = [folder_name, index + 1, ' '.join(map(str, win)), i, avg_std_df.iloc[index]['avg'],
-                        avg_std_df.iloc[index]['std'], np.mean(avg_q)]
-                word_list.append(pair)
-    return word_list
-
-def read_gestures_from_csv(all_files, directory, shift_length, window_length, bands, word_dict):
-    for file_ in all_files:
-        file_name = file_.split("\\")[-1].split(".")[0]
-        if file_name not in word_dict.keys():
-            word_dict[file_name] = list()
-        df = pd.read_csv(file_, header=None)
-        column_names = [x for x in range(1, df.shape[1])]
-        df = pd.DataFrame(df, columns=column_names)
-        avg_std_df = calculate_avg_std_sensor_wise(df)
-        df_norm = normalizeSensorWise(df)
-        quantized_data, mid_point_df = quantization(df_norm.copy(), bands)
-        word_dict[file_name].extend(create_word_dictionary(avg_std_df, mid_point_df, quantized_data, directory, window_length, shift_length))
 
 
 def parse_and_store_file_data(file_dict, key, value, all_words, vectors):
@@ -153,77 +101,84 @@ def similarity(old_data,new_data,word_dict,all_files_objects):
     print("--------------")
 
 
-def main():
-    datadir = input("Enter the directory containing all the components, words and vectors: ")
-    new_datadir = input("Enter the directory containing the query objects: ")
+def main(user_option,model,gesture_file):
+    datadir = Utilities.read_directory()
+    # gesture_file = input("Enter the gesture object: ")
     window_size = int(input("Enter the window size: "))
     strides = int(input("Enter the strides: "))
     resolution = int(input("Enter the resolution: "))
-    model = input("Enter 1 for TF and 2 for TF-IDF: ")
-    user_option = input(" Enter 1 for PCA\n Enter 2 for SVD \n Enter 3 for NMF \n Enter 4 for LDA \n Enter 0 to exit: \n")
-    dirs = Utilities.get_all_sub_folders(new_datadir)
+    # model = input("Enter 1 for TF and 2 for TF-IDF: ")
+    # user_option = input(" Enter 1 for PCA\n Enter 2 for SVD \n Enter 3 for NMF \n Enter 4 for LDA \n Enter 0 to exit: \n")
+    
+    dirs = Utilities.get_all_sub_folders(datadir)
     bands = Task0.gaussian_bands(resolution)
     word_dict = dict()
     for folder in dirs:
         print("Processing for Folder ", folder, "...")
-        all_files = glob.glob(new_datadir + '\\' + folder + "/*.csv")
-        file_directory = new_datadir + '\\' + folder
-        read_gestures_from_csv(all_files, file_directory, strides, window_size, bands, word_dict)
+        all_files = glob.glob(datadir + '\\' + folder + "\\" + gesture_file + ".csv")
+        file_directory = datadir + '\\' + folder
+        Task0.read_gestures_from_csv(all_files, file_directory, strides, window_size, bands, word_dict)
         print("Done!")
+
     all_words = Utilities.fetchAllWordsFromDictionary(datadir)
     data_dict, data_df = fill_word_dictionary(word_dict, all_words)
-    final_tf, final_tf_idf = calculations(new_datadir, data_dict, data_df, all_words)
-    old_data = pd.read_csv(os.path.join(datadir,"latent_features.txt"),header=None)
+    final_tf, final_tf_idf = calculations(datadir, data_dict, data_df, all_words)
+
+    # old_data = pd.read_csv(os.path.join(datadir,"latent_features.txt"),header=None)
     all_files_objects = glob.glob(datadir + "\W" + "/*.csv")
     all_files_objects.sort(key=lambda x:int((x.split("\\")[-1]).split(".")[0]))
-    if user_option == '1':
-        if model == '1':
-            pca_reload = pickle.load(open(datadir + "\model_pca.pkl",'rb'))
+    if user_option == 2:
+        old_data = pd.read_csv(os.path.join(datadir,"latent_features_pca_task1.txt"),header=None)
+        if model == 'tf':
+            pca_reload = pickle.load(open(datadir + "\model_pca_task1.pkl",'rb'))
             final_tf = np.asarray(final_tf)
             trans_data = pca_reload.transform(final_tf)
             for i in range(len(trans_data)):
                 similarity(old_data,trans_data[i],word_dict,all_files_objects)
-        elif model == '2':
-            pca_reload = pickle.load(open(datadir + "\model_pca.pkl",'rb'))
+        elif model == 'tfidf':
+            pca_reload = pickle.load(open(datadir + "\model_pca_task1.pkl",'rb'))
             final_tf_idf = np.asarray(final_tf_idf)
             trans_data = pca_reload.transform(final_tf_idf)
             for i in range(len(trans_data)):
                 similarity(old_data,trans_data[i],word_dict,all_files_objects)
-    elif user_option == '2':
-        if model == '1':
-            pca_reload = pickle.load(open(datadir + "\model_svd.pkl",'rb'))
+    elif user_option == 3:
+        old_data = pd.read_csv(os.path.join(datadir,"latent_features_svd_task1.txt"),header=None)
+        if model == 'tf':
+            pca_reload = pickle.load(open(datadir + "\model_svd_task1.pkl",'rb'))
             final_tf = np.asarray(final_tf)
             trans_data = pca_reload.transform(final_tf)
             for i in range(len(trans_data)):
                 similarity(old_data,trans_data[i],word_dict,all_files_objects)
-        elif model == '2':
-            pca_reload = pickle.load(open(datadir + "\model_svd.pkl",'rb'))
+        elif model == 'tfidf':
+            pca_reload = pickle.load(open(datadir + "\model_svd_task1.pkl",'rb'))
             final_tf_idf = np.asarray(final_tf_idf)
             trans_data = pca_reload.transform(final_tf_idf)
             for i in range(len(trans_data)):
                 similarity(old_data,trans_data[i],word_dict,all_files_objects)
-    elif user_option == '3':
-        if model == '1':
-            pca_reload = pickle.load(open(datadir + "\model_nmf.pkl",'rb'))
+    elif user_option == 4:
+        old_data = pd.read_csv(os.path.join(datadir,"latent_features_nmf_task1.txt"),header=None)
+        if model == 'tf':
+            pca_reload = pickle.load(open(datadir + "\model_nmf_task1.pkl",'rb'))
             final_tf = np.asarray(final_tf)
             trans_data = pca_reload.transform(final_tf)
             for i in range(len(trans_data)):
                 similarity(old_data,trans_data[i],word_dict,all_files_objects)
-        elif model == '2':
-            pca_reload = pickle.load(open(datadir + "\model_nmf.pkl",'rb'))
+        elif model == 'tfidf':
+            pca_reload = pickle.load(open(datadir + "\model_nmf_task1.pkl",'rb'))
             final_tf_idf = np.asarray(final_tf_idf)
             trans_data = pca_reload.transform(final_tf_idf)
             for i in range(len(trans_data)):
                 similarity(old_data,trans_data[i],word_dict,all_files_objects)
-    elif user_option == '4':
-        if model == '1':
-            pca_reload = pickle.load(open(datadir + "\model_lda.pkl",'rb'))
+    elif user_option == 5:
+        old_data = pd.read_csv(os.path.join(datadir,"latent_features_lda_task1.txt"),header=None)
+        if model == 'tf':
+            pca_reload = pickle.load(open(datadir + "\model_lda_task1.pkl",'rb'))
             final_tf = np.asarray(final_tf)
             trans_data = pca_reload.transform(final_tf)
             for i in range(len(trans_data)):
                 similarity(old_data,trans_data[i],word_dict,all_files_objects)
-        elif model == '2':
-            pca_reload = pickle.load(open(datadir + "\model_lda.pkl",'rb'))
+        elif model == 'tfidf':
+            pca_reload = pickle.load(open(datadir + "\model_lda_task1.pkl",'rb'))
             final_tf_idf = np.asarray(final_tf_idf)
             trans_data = pca_reload.transform(final_tf_idf)
             for i in range(len(trans_data)):

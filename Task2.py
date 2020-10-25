@@ -2,7 +2,7 @@ import glob
 import re
 
 import pandas as pd
-
+import task2_pinaki
 import Utilities
 import dtw
 
@@ -108,12 +108,16 @@ def main():
                 dotProduct(directory, gesture, vector_model)
             elif task == 2:
                 print("PCA")
+                task2_pinaki.main(2,vector_model,gesture)
             elif task == 3:
                 print("SVD")
+                task2_pinaki.main(3,vector_model,gesture)
             elif task == 4:
                 print("NMF")
+                task2_pinaki.main(4,vector_model,gesture)
             elif task == 5:
                 print("LDA")
+                task2_pinaki.main(5,vector_model,gesture)
             elif task == 6:
                 editDistance(directory, gesture)
             elif task == 7:
