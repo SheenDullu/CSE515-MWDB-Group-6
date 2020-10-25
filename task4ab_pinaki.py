@@ -27,7 +27,6 @@ def degree_of_membership(model,datadir):
     print(bins)
 
 def main():
-    bins = dict()
     datadir = Utilities.read_directory()
     user_input = input("Enter 1 for task 4a and 2 for task 4b: ")
     if user_input == '1':
@@ -36,22 +35,6 @@ def main():
     elif user_input == '2':
         nmf_reload = pickle.load(open(datadir + "\model_nmf_task3.pkl",'rb'))
         degree_of_membership(nmf_reload,datadir)
-
-
-
-
-    # old_data = old_data.values.tolist()
-    # for i in range(len(old_data)):
-    #     maxpos = old_data[i].index(max(old_data[i]))
-    #     bin_number = maxpos+1
-    #     if bin_number not in bins:
-    #         bins[bin_number] = list()
-    #         bins[bin_number].append("" + str(i+1) + ".csv")
-    #     else:
-    #         bins[bin_number].append("" + str(i+1) + ".csv")
-    # print(bins)
-    
-
 
 
 if __name__ == '__main__':
