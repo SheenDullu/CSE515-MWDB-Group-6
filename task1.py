@@ -43,7 +43,7 @@ def calculating_nmf(k, vector, unique_word_dicts, datadir):
         loading_scores.sort_index(axis=1, ascending=False, inplace=True)
         sorted_values = list(loading_scores.columns)
         for j in range(len(unique_word_dicts)):
-            word_writer.writerow([i + 1, loading_scores.iloc[0, j], sorted_values[j]])
+            word_writer.writerow(["Latent feature " + str(i+1),loading_scores.iloc[0,j],sorted_values[j]])
     word_file.close()
     print("Printed word and score file for NMF")
     pickle.dump(nmf, open(datadir + "\model_nmf.pkl", "wb"))
@@ -71,7 +71,7 @@ def calculating_pca(k, vector, unique_word_dicts, datadir):
         sorted_values = list(loading_scores.columns)
         # sorted_loading_scores = list(loading_scores.sort_values(ascending=False))
         for j in range(len(unique_word_dicts)):
-            word_writer.writerow([i + 1, loading_scores.iloc[0, j], sorted_values[j]])
+            word_writer.writerow(["Latent feature " + str(i+1),loading_scores.iloc[0,j],sorted_values[j]])
     word_file.close()
     print("Printed word and score file for PCA")
     pickle.dump(pca, open(datadir + "\model_pca.pkl", "wb"))
@@ -97,7 +97,7 @@ def calculating_svd(k, vector, unique_word_dicts, datadir):
         loading_scores.sort_index(axis=1, ascending=False, inplace=True)
         sorted_values = list(loading_scores.columns)
         for j in range(len(unique_word_dicts)):
-            word_writer.writerow([i + 1, loading_scores.iloc[0, j], sorted_values[j]])
+            word_writer.writerow(["Latent feature " + str(i+1),loading_scores.iloc[0,j],sorted_values[j]])
     word_file.close()
     print("Printed word and score file for SVD")
     pickle.dump(svd, open(datadir + "\model_svd.pkl", "wb"))
@@ -123,7 +123,7 @@ def calculating_lda(k, vector, unique_word_dicts, datadir):
         sorted_values = list(loading_scores.columns)
         # sorted_loading_scores = list(loading_scores.sort_values(ascending=False))
         for j in range(len(unique_word_dicts)):
-            word_writer.writerow([i + 1, loading_scores.iloc[0, j], sorted_values[j]])
+            word_writer.writerow(["Latent feature " + str(i+1),loading_scores.iloc[0,j],sorted_values[j]])
     word_file.close()
     print("Printed word and score file for LDA")
     pickle.dump(lda, open(datadir + "\model_lda.pkl", "wb"))
