@@ -44,20 +44,7 @@ def dotProduct(directory, file, model):
 #                 matrix[x, y] = min(matrix[x-1, y] + insertCost, matrix[x, y-1] + deleteCost, matrix[x-1, y-1] +
 #                                    replaceCost)
 #     return matrix[i - 1, j - 1]
-def replace(s1,s2):
-    s1=s1.split(' ')
-    s2=s2.split(' ')
 
-    num1=0
-    num2=0
-    for i in range(len(s1)):
-        num1 = num1*10 + int(s1[i])
-        num2 = num2*10 + int(s2[i])
-
-    dif=abs(num1-num2)
-
-    #Denominator has to be changed
-    return (dif)/(666-111)
 
 
 def editDistance(directory, file):
@@ -88,7 +75,7 @@ def editDistance(directory, file):
 
     vals = sorted(range(len(editValues)), key=lambda k: editValues[k])
 
-    for i in range(0, 11):
+    for i in range(0, 31 ):
         print(str(i+1) + " . Gesture " + all_files[vals[i]].split("\\")[-1].split(".")[0] + " , " + str(editValues[vals[i]]))
 
 
@@ -133,5 +120,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-    # editDistance(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data', '278')
+    # main()
+    editDistance(r'C:\Users\Vccha\MWDB\CSE515-MWDB-Group-6\test', '275')
