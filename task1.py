@@ -57,10 +57,8 @@ def calculating_nmf(k, vector, unique_word_dicts, datadir):
 
 def calculating_pca(k, vector, unique_word_dicts, datadir):
     pca = PCA(n_components=k)
-    # tf = tf.T
     pca.fit(vector)
     pca_data = pca.transform(vector)
-    per_var = np.round(pca.explained_variance_ratio_ * 100, decimals=1)
 
     word_file = open(datadir + '\word_score_pca.txt', mode='w')
     word_writer = csv.writer(word_file, delimiter=',')

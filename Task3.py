@@ -84,7 +84,8 @@ def main():
     while True:
         task = int(input("Press 1 for performing SVD on Gesture Gesture Matrix \n"
                          "Press 2 for performing NMF on Gesture Gesture Matrix \n"))
-        datadir = input("Enter the directory containing all the components, words and vectors: ")
+        datadir = Utilities.read_directory()
+        directory = Utilities.read_directory()
         p = int(input("Number of principle components to use: "))
         while True:
             print("List of a Gesture Gesture Matrix:")
@@ -94,7 +95,7 @@ def main():
             gesture_model = int(input("Select a Gesture Gesture Matrix:\n"))
             print("Creating Gesture-Gesture matrix")
             if gesture_model == 1:
-                gesture_gesture_matrix = dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
+                gesture_gesture_matrix = dotProduct(directory)
             elif gesture_model == 6:
                 # gesture_gesture_matrix = editDistance(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
                 gesture_gesture_matrix = pd.read_csv('editDistanceMatrix.csv', index_col=0)
@@ -142,10 +143,10 @@ def main():
 
             if task == 1:
                 print("Performing SVD...")
-                performSVD(gesture_gesture_matrix, p, r'F:\mwdb\data')
+                performSVD(gesture_gesture_matrix, p, directory)
             elif task == 2:
                 print("Performing NMF...")
-                performNMF(gesture_gesture_matrix, p, r'F:\mwdb\data')
+                performNMF(gesture_gesture_matrix, p, directory)
         out = int(input("Press 1 to continue\nPress 0 to exit Task 3\n"))
         if out == 0:
             break
