@@ -79,7 +79,7 @@ def calculations(directory, data_dict, data_df, all_words):
         final_tf_idf.append(tf_idf_vector)
     return final_tf,final_tf_idf
 
-def similarity(old_data,new_data,word_dict,all_files_objects):
+def similarity(old_data,new_data,all_files_objects):
     heap = []
     for index, row in old_data.iterrows():
         some = list(row)
@@ -96,7 +96,7 @@ def similarity(old_data,new_data,word_dict,all_files_objects):
     similar_objects = list()
     for i in range(10):
         a,b = heapq.heappop(heap)
-        similar_objects.append(b)
+        similar_objects.append((b,a))
     print(similar_objects)
     print("--------------")
 
@@ -107,82 +107,27 @@ def main(user_option,model,gesture_file):
     window_size = int(input("Enter the window size: "))
     strides = int(input("Enter the strides: "))
     resolution = int(input("Enter the resolution: "))
-    # model = input("Enter 1 for TF and 2 for TF-IDF: ")
-    # user_option = input(" Enter 1 for PCA\n Enter 2 for SVD \n Enter 3 for NMF \n Enter 4 for LDA \n Enter 0 to exit: \n")
-    
-    dirs = Utilities.get_all_sub_folders(datadir)
-    bands = Task0.gaussian_bands(resolution)
-    word_dict = dict()
-    for folder in dirs:
-        print("Processing for Folder ", folder, "...")
-        all_files = glob.glob(datadir + '\\' + folder + "\\" + gesture_file + ".csv")
-        file_directory = datadir + '\\' + folder
-        Task0.read_gestures_from_csv(all_files, file_directory, strides, window_size, bands, word_dict)
-        print("Done!")
-
-    all_words = Utilities.fetchAllWordsFromDictionary(datadir)
-    data_dict, data_df = fill_word_dictionary(word_dict, all_words)
-    final_tf, final_tf_idf = calculations(datadir, data_dict, data_df, all_words)
-
-    # old_data = pd.read_csv(os.path.join(datadir,"latent_features.txt"),header=None)
+    path = glob.glob(datadir + '\W' + '\\')
+    path[0] = path[0] + str(gesture_file) + '.csv'
     all_files_objects = glob.glob(datadir + "\W" + "/*.csv")
     all_files_objects.sort(key=lambda x:int((x.split("\\")[-1]).split(".")[0]))
+    index = all_files_objects.index(path[0])
     if user_option == 2:
         old_data = pd.read_csv(os.path.join(datadir,"latent_features_pca_task1.txt"),header=None)
-        if model == 'tf':
-            pca_reload = pickle.load(open(datadir + "\model_pca_task1.pkl",'rb'))
-            final_tf = np.asarray(final_tf)
-            trans_data = pca_reload.transform(final_tf)
-            for i in range(len(trans_data)):
-                similarity(old_data,trans_data[i],word_dict,all_files_objects)
-        elif model == 'tfidf':
-            pca_reload = pickle.load(open(datadir + "\model_pca_task1.pkl",'rb'))
-            final_tf_idf = np.asarray(final_tf_idf)
-            trans_data = pca_reload.transform(final_tf_idf)
-            for i in range(len(trans_data)):
-                similarity(old_data,trans_data[i],word_dict,all_files_objects)
+        trans_data = old_data.to_numpy()[index]
+        similarity(old_data,trans_data,all_files_objects)
     elif user_option == 3:
         old_data = pd.read_csv(os.path.join(datadir,"latent_features_svd_task1.txt"),header=None)
-        if model == 'tf':
-            pca_reload = pickle.load(open(datadir + "\model_svd_task1.pkl",'rb'))
-            final_tf = np.asarray(final_tf)
-            trans_data = pca_reload.transform(final_tf)
-            for i in range(len(trans_data)):
-                similarity(old_data,trans_data[i],word_dict,all_files_objects)
-        elif model == 'tfidf':
-            pca_reload = pickle.load(open(datadir + "\model_svd_task1.pkl",'rb'))
-            final_tf_idf = np.asarray(final_tf_idf)
-            trans_data = pca_reload.transform(final_tf_idf)
-            for i in range(len(trans_data)):
-                similarity(old_data,trans_data[i],word_dict,all_files_objects)
+        trans_data = old_data.to_numpy()[index]
+        similarity(old_data,trans_data,all_files_objects)
     elif user_option == 4:
         old_data = pd.read_csv(os.path.join(datadir,"latent_features_nmf_task1.txt"),header=None)
-        if model == 'tf':
-            pca_reload = pickle.load(open(datadir + "\model_nmf_task1.pkl",'rb'))
-            final_tf = np.asarray(final_tf)
-            trans_data = pca_reload.transform(final_tf)
-            for i in range(len(trans_data)):
-                similarity(old_data,trans_data[i],word_dict,all_files_objects)
-        elif model == 'tfidf':
-            pca_reload = pickle.load(open(datadir + "\model_nmf_task1.pkl",'rb'))
-            final_tf_idf = np.asarray(final_tf_idf)
-            trans_data = pca_reload.transform(final_tf_idf)
-            for i in range(len(trans_data)):
-                similarity(old_data,trans_data[i],word_dict,all_files_objects)
+        trans_data = old_data.to_numpy()[index]
+        similarity(old_data,trans_data,all_files_objects)
     elif user_option == 5:
         old_data = pd.read_csv(os.path.join(datadir,"latent_features_lda_task1.txt"),header=None)
-        if model == 'tf':
-            pca_reload = pickle.load(open(datadir + "\model_lda_task1.pkl",'rb'))
-            final_tf = np.asarray(final_tf)
-            trans_data = pca_reload.transform(final_tf)
-            for i in range(len(trans_data)):
-                similarity(old_data,trans_data[i],word_dict,all_files_objects)
-        elif model == 'tfidf':
-            pca_reload = pickle.load(open(datadir + "\model_lda_task1.pkl",'rb'))
-            final_tf_idf = np.asarray(final_tf_idf)
-            trans_data = pca_reload.transform(final_tf_idf)
-            for i in range(len(trans_data)):
-                similarity(old_data,trans_data[i],word_dict,all_files_objects)
+        trans_data = old_data.to_numpy()[index]
+        similarity(old_data,trans_data,all_files_objects)
 
 
 
