@@ -83,10 +83,5 @@ def DTWDist(seq1, seq1Index, seq2, seq2Index,matrix,flag):
     else:
         return min(abs(seq1[seq1Index]-seq2[seq2Index])+matrix[seq1Index, seq2Index+1], matrix[seq1Index+1, seq2Index],abs(seq1[seq1Index]-seq2[seq2Index])+ matrix[seq1Index,seq2Index])
 
-<<<<<<< Updated upstream
-# EXAMPLE RUN
-# dynamicTimeWarping("test","270.wrd")
-=======
 # # EXAMPLE RUN
 # dynamicTimeWarping("3_class_gesture_data","270.wrd")
->>>>>>> Stashed changes
