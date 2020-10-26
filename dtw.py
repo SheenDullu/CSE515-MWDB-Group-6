@@ -1,9 +1,8 @@
 import glob
-import re
-
 import numpy as np
+import re
+import csv
 import pandas as pd
-
 
 def dynamicTimeWarping(directory,file):
     values={}
@@ -41,8 +40,8 @@ def dynamicTimeWarping(directory,file):
     print("---------------------------------")
     print("      File      |  DTW Distance  ")
     print("---------------------------------")
-    for i in range(11):
-        print(output[i][0].split('\\')[-1] + "\t|" + "\t" + str(output[i][1]))
+    for i in range(10):
+        print(output[i][0]+"\t|"+"\t"+str(output[i][1]))
 
 def fetchAQA(directory,file):
     values=[]
@@ -83,4 +82,4 @@ def DTWDist(seq1, seq1Index, seq2, seq2Index,matrix,flag):
         return min(abs(seq1[seq1Index]-seq2[seq2Index])+matrix[seq1Index, seq2Index+1], matrix[seq1Index+1, seq2Index],abs(seq1[seq1Index]-seq2[seq2Index])+ matrix[seq1Index,seq2Index])
 
 # EXAMPLE RUN
-# dynamicTimeWarping("test","270.wrd")
+dynamicTimeWarping("test","270.wrd")
