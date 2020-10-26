@@ -32,23 +32,18 @@ def task4a(directory):
     return result
 
 
-def task4c(directory):
-    data = pd.read_csv(directory, header=None,
-                       names=['features', 'file', 'score'])
+def task4c(ggMatrix,k):
 
-    num_features = data['features'].max()
-    for f in range(1, num_features + 1):
-        temp = data[data['features'] == f].sort_values(['file']).drop(['features', 'file'], axis=1).to_numpy()
+    trial = kmeans.Cluster(ggMatrix.to_numpy(), int(k))
+    output = trial.kmeans()
+    index=ggMatrix.index
 
-        if (f == 1):
-            result = temp
-        else:
-            result = np.concatenate([result, temp], axis=1)
-
-    trial = kmeans.Cluster(result, 3, 1)
-    k = trial.kmeans()
-
-    print(k)
+    for i in range(1, int(k) + 1):
+        print("Cluster "+str(i))
+        print("---------")
+        for j in range(len(output[i])):
+            print(index[output[i][j]])
+    print()
 
 def task4d(ggMatrix,k, gg):
     # print("Enter [1] for dot product")

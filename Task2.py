@@ -62,33 +62,35 @@ def main():
         # directory = input("Enter the directory containing all the components, words and vectors: \n")
         directory = Utilities.read_directory()
         gesture = input("Enter gesture number\n")
-        while True:
-            vector_model = input("Enter the vector model you want to use \nEnter tf or tfidf: ")
-            print('Enter 1 for Dot Product\nEnter 2 for PCA\nEnter 3 for SVD\nEnter 4 for NMF')
-            print('Enter 5 for LDA\nEnter 6 for Edit Distance\nEnter 7 for DTW')
-            task = int(input("What Task do you want to perform: (enter 0 to exit)\n"))
-            if task == 1:
-                # dotProduct(directory, gesture, vector_model)
-                dotProduct(directory, gesture, vector_model)
-            elif task == 2:
-                print("PCA")
-                task2_pinaki.main(2,vector_model,gesture)
-            elif task == 3:
-                print("SVD")
-                task2_pinaki.main(3,vector_model,gesture)
-            elif task == 4:
-                print("NMF")
-                task2_pinaki.main(4,vector_model,gesture)
-            elif task == 5:
-                print("LDA")
-                task2_pinaki.main(5,vector_model,gesture)
-            elif task == 6:
-                editDistance(directory, gesture)
-            elif task == 7:
-                dtw.dynamicTimeWarping(directory, gesture + '.wrd')
-            elif task == 0:
-                print("Thank you.")
-                break
+
+        vector_model = input("Enter the vector model you want to use \nEnter tf or tfidf: ")
+        print('Enter 1 for Dot Product\nEnter 2 for PCA\nEnter 3 for SVD\nEnter 4 for NMF')
+        print('Enter 5 for LDA\nEnter 6 for Edit Distance\nEnter 7 for DTW')
+        task = int(input("What Task do you want to perform: (enter 0 to exit)\n"))
+        if task == 1:
+            print('Dot Product')
+            dotProduct(directory, gesture, vector_model)
+        elif task == 2:
+            print("PCA")
+            task2_pinaki.main(2, vector_model, gesture)
+        elif task == 3:
+            print("SVD")
+            task2_pinaki.main(3, vector_model, gesture)
+        elif task == 4:
+            print("NMF")
+            task2_pinaki.main(4, vector_model, gesture)
+        elif task == 5:
+            print("LDA")
+            task2_pinaki.main(5, vector_model, gesture)
+        elif task == 6:
+            print('Edit Distance')
+            editDistance(directory, gesture)
+        elif task == 7:
+            print("DTW")
+            dtw.dynamicTimeWarping(directory, gesture + '.wrd')
+        elif task == 0:
+            print("Thank you.")
+            break
         option = int(input("Press 1 to Continue\nPress 0 to exit Task 2"))
         if option == 0:
             break

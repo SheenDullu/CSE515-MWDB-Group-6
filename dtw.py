@@ -82,4 +82,4 @@ def DTWDist(seq1, seq1Index, seq2, seq2Index,matrix,flag):
         return min(abs(seq1[seq1Index]-seq2[seq2Index])+matrix[seq1Index, seq2Index+1], matrix[seq1Index+1, seq2Index],abs(seq1[seq1Index]-seq2[seq2Index])+ matrix[seq1Index,seq2Index])
 
 # EXAMPLE RUN
-dynamicTimeWarping("test","270.wrd")
+# dynamicTimeWarping("test","270.wrd")
