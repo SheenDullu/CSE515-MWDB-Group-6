@@ -35,9 +35,15 @@ def task4a(directory):
 def task4c(ggMatrix,k):
 
     trial = kmeans.Cluster(ggMatrix.to_numpy(), int(k))
-    k = trial.kmeans()
+    output = trial.kmeans()
+    index=ggMatrix.index
 
-    print(k)
+    for i in range(1, int(k) + 1):
+        print("Cluster "+str(i))
+        print("---------")
+        for j in range(len(output[i])):
+            print(index[output[i][j]])
+    print()
 
 def task4d():
     print("Enter [1] for dot product")
