@@ -32,26 +32,39 @@ def task4a(directory):
     return result
 
 
-def task4c(directory):
-    data = pd.read_csv(directory, header=None,
-                       names=['features', 'file', 'score'])
+def task4c(ggMatrix,k):
 
-    num_features = data['features'].max()
-    for f in range(1, num_features + 1):
-        temp = data[data['features'] == f].sort_values(['file']).drop(['features', 'file'], axis=1).to_numpy()
-
-        if (f == 1):
-            result = temp
-        else:
-            result = np.concatenate([result, temp], axis=1)
-
-    trial = kmeans.Cluster(result, 3, 1)
+    trial = kmeans.Cluster(ggMatrix.to_numpy(), int(k))
     k = trial.kmeans()
 
     print(k)
 
+def task4d():
+    print("Enter [1] for dot product")
+    print("Enter [2] for PCA")
+    print("Enter [3] for SVD")
+    print("Enter [4] for NMF")
+    print("Enter [5] for LDA")
+    print("Enter [6] for edit distance")
+    print("Enter [7] for DTW")
+    gg=input("Which gesture-gesture matrix would you like to use: ")
+    k=input("How many clusters would you like to compute: ")
 
-def task4d(gg, ggMatrix, k):
+    if(gg=="1"):
+        ggMatrix=pd.read_csv("dotProductMatrix.csv",index_col=[0])
+    elif(gg=="2"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="3"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="4"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="5"):
+        ggMatrix=pd.read_csv()
+    elif(gg=="6"):
+        ggMatrix=pd.read_csv("editDistanceMatrix.csv",index_col=[0])
+    elif(gg=="7"):
+        ggMatrix=pd.read_csv("dtwDistanceMatrix.csv",index_col=[0])
+
     threshold(gg,ggMatrix)
     # x = 0.5                                         # IMPLEMENT SEPARATE THRESHOLD FUNCTION
     cols=list(ggMatrix.columns)                             #
@@ -142,14 +155,14 @@ def main():
             svd_reload = pickle.load(open(directory + "\model_nmf_task3.pkl", 'rb'))
             task4ab_pinaki.degree_of_membership(svd_reload, directory)
         elif task == 3:
-            gg, ggMatrix, k = getUserInput()
-            task4c(gg, ggMatrix, k)
+            ggMatrix, k = show()
+            task4c(ggMatrix, k)
         elif task == 4:
-            gg, ggMatrix, k = getUserInput()
+            ggMatrix, k = show()
             task4d(ggMatrix, k)
 
 
-def getUserInput():
+def show():
     print("Enter [1] for dot product")
     print("Enter [2] for PCA")
     print("Enter [3] for SVD")
@@ -173,7 +186,7 @@ def getUserInput():
         ggMatrix = pd.read_csv("editDistanceMatrix.csv", index_col=[0])
     elif gg == "7":
         ggMatrix = pd.read_csv("dtwDistanceMatrix.csv", index_col=[0])
-    return gg, ggMatrix, k
+    return ggMatrix, k
 
 
 if __name__ == '__main__':
