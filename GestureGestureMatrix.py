@@ -23,14 +23,19 @@ def DTWMatrix(directory):
     keys = glob.glob(directory + "/*.wrd")
     keys.sort(key=lambda var: [int(x) if x.isdigit() else x for x in re.split('(\d+)', var)])
     keys = [key.replace(directory + "\\", "") for key in keys]
+    print(keys)
     matrix = np.empty([len(keys), len(keys)])
     for key1 in keys:
-        base = dtw.fetchAQA(directory, key1)
-        baseSize = base.shape[0] - 1
+        val = dtw.dynamicTimeWarping(directory,key1)
+        distances=list(val.values())
         for key2 in keys:
-            compare = dtw.fetchAQA(directory, key2)
-            compareSize = compare.shape[0] - 1
-            matrix[keys.index(key1), keys.index(key2)] = dtw.DTWDist(base, baseSize, compare, compareSize)
+            matrix[keys.index(key1), keys.index(key2)] = distances[keys.index(key2)]
+        # base = dtw.fetchAQA(directory, key1)
+        # baseSize = base.shape[0] - 1
+    #     for key2 in keys:
+    #         compare = dtw.fetchAQA(directory, key2)
+    #         compareSize = compare.shape[0] - 1
+    #         matrix[keys.index(key1), keys.index(key2)] = dtw.DTWDist(base, baseSize, compare, compareSize)
     df = pd.DataFrame(matrix, index=keys, columns=keys)
     df_norm = df.subtract(df.min(axis=1), axis=0) \
         .divide(df.max(axis=1) - df.min(axis=1), axis=0) \
@@ -81,6 +86,8 @@ def editDistance(directory):
     return df_norm
 
 
-if __name__ == '__main__':
-    #dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
-    editDistance(r'C:\Class\CSE515 Multimedia\3_class_gesture_data')
+# if __name__ == '__main__':
+#     #dotProduct(r'D:\ASU\Courses\MWDB\Project\3_class_gesture_data')
+#     # editDistance(r'C:\Class\CSE515 Multimedia\3_class_gesture_data')
+
+DTWMatrix("3_class_gesture_data")

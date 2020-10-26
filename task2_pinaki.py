@@ -1,19 +1,13 @@
-import pandas as pd
-import numpy as np
-from sklearn.decomposition import PCA,NMF,TruncatedSVD
-from sklearn.decomposition import LatentDirichletAllocation as LDA
-from scipy.spatial import distance
 # from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
-from sklearn import preprocessing
 import glob
-import matplotlib.pyplot as plt
-import os
-import csv
-import pickle
-import Utilities
-import Task0
-import math
 import heapq
+import math
+import os
+
+import numpy as np
+import pandas as pd
+
+import Utilities
 
 
 def getAllWords(directory):
@@ -94,19 +88,23 @@ def similarity(old_data,new_data,all_files_objects):
         heap.append((dis,current_file))
     heapq.heapify(heap)
     similar_objects = list()
-    for i in range(10):
+    for i in range(11):
         a,b = heapq.heappop(heap)
         similar_objects.append((b,a))
-        print(b,",",a)
+    i = 1
+    for val in similar_objects:
+        print(str(i) + ". " + str(val[0]) + " " + str(val[1]))
+        i = i + 1
+    # print(similar_objects)
     print("--------------")
 
 
 def main(user_option,model,gesture_file):
     datadir = Utilities.read_directory()
     # gesture_file = input("Enter the gesture object: ")
-    window_size = int(input("Enter the window size: "))
-    strides = int(input("Enter the strides: "))
-    resolution = int(input("Enter the resolution: "))
+    # window_size = int(input("Enter the window size: "))
+    # strides = int(input("Enter the strides: "))
+    # resolution = int(input("Enter the resolution: "))
     path = glob.glob(datadir + '\W' + '\\')
     path[0] = path[0] + str(gesture_file) + '.csv'
     all_files_objects = glob.glob(datadir + "\W" + "/*.csv")

@@ -7,7 +7,7 @@ from Task0 import task0a, task0b
 
 def main():
     while True:
-        print("########## Phase 1 ##########")
+        print("########## Phase 2 ##########")
         print("Task 0a: Perform Normalization and Quantization")
         print("Task 0b: Build Gesture Vectors")
         print("Task 1: Build the PCA, SVD, NMF, LDA word scores")
