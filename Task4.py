@@ -46,31 +46,6 @@ def task4c(ggMatrix,k):
     print()
 
 def task4d(ggMatrix,k, gg):
-    # print("Enter [1] for dot product")
-    # print("Enter [2] for PCA")
-    # print("Enter [3] for SVD")
-    # print("Enter [4] for NMF")
-    # print("Enter [5] for LDA")
-    # print("Enter [6] for edit distance")
-    # print("Enter [7] for DTW")
-    # gg=input("Which gesture-gesture matrix would you like to use: ")
-    # k=input("How many clusters would you like to compute: ")
-
-    # if(gg=="1"):
-    #     ggMatrix=pd.read_csv("dotProductMatrix.csv",index_col=[0])
-    # elif(gg=="2"):
-    #     ggMatrix=pd.read_csv()
-    # elif(gg=="3"):
-    #     ggMatrix=pd.read_csv()
-    # elif(gg=="4"):
-    #     ggMatrix=pd.read_csv()
-    # elif(gg=="5"):
-    #     ggMatrix=pd.read_csv()
-    # elif(gg=="6"):
-    #     ggMatrix=pd.read_csv("editDistanceMatrix.csv",index_col=[0])
-    # elif(gg=="7"):
-    #     ggMatrix=pd.read_csv("dtwDistanceMatrix.csv",index_col=[0])
-
     threshold(gg,ggMatrix)
 
     cols=list(ggMatrix.columns)
@@ -155,7 +130,7 @@ def main():
             svd_reload = pickle.load(open(directory + "\model_nmf_task3.pkl", 'rb'))
             task4ab_pinaki.degree_of_membership(svd_reload, directory)
         elif task == 3:
-            ggMatrix, k = show()
+            ggMatrix, k, gg = show()
             task4c(ggMatrix, k)
         elif task == 4:
             ggMatrix, k, gg = show()

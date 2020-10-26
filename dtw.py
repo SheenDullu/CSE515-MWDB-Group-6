@@ -1,21 +1,17 @@
 import glob
-import numpy as np
 import re
-import csv
+
+import numpy as np
 import pandas as pd
+
 
 def dynamicTimeWarping(directory,file):
     values={}
     base=fetchAQA(directory,file)
-
     compareKeys=glob.glob(directory+"/*.wrd")
     compareKeys.sort(key=lambda var:[int(x) if x.isdigit() else x for x in re.split('(\d+)',var)])
     cs_keys=base["cs"].unique()
-
-
     for key in compareKeys:
-
-
         compare=fetchAQA(directory,key.replace(directory+"\\",""))
 
         values[key]=0
@@ -24,18 +20,14 @@ def dynamicTimeWarping(directory,file):
             compare_cs=compare[compare["cs"]==cs_key]["x"].to_numpy()
             baseSize=len(base_cs)-1
             compareSize=len(compare_cs)-1
-
             matrix = np.ones((baseSize+2, compareSize+2)) * -1
-
             matrix[1:, 0] = base_cs
             matrix[0, 1:] = compare_cs
             matrix[0,0] =0
             flag=0
             matrix[baseSize+1,compareSize+1]=DTWDist(base_cs,baseSize,compare_cs,compareSize,matrix,flag)
             values[key] += matrix[baseSize+1,compareSize+1]
-        
     return values
-    
     rankings={k:v for k,v in sorted(values.items(),key=lambda x:x[1])}
     output=list(rankings.items())
     print()
@@ -43,7 +35,7 @@ def dynamicTimeWarping(directory,file):
     print("      File      |  DTW Distance  ")
     print("---------------------------------")
     for i in range(10):
-        print(output[i][0]+"\t|"+"\t"+str(output[i][1]))
+        print(output[i][0].split('\\')[-1] + "\t|" + "\t" + str(output[i][1]))
 
 def fetchAQA(directory,file):
     values=[]

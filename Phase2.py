@@ -1,5 +1,7 @@
+
 import Task2
 import Task3
+import Task4
 import Utilities
 import task1
 from Task0 import task0a, task0b
@@ -42,6 +44,7 @@ def main():
             print("########## Task 3 Completed ##########\n")
         elif task == '4':
             print("########## Task 4 ##########")
+            Task4.main()
             print("########## Task 4 Completed ##########\n")
 
         elif task == '0':

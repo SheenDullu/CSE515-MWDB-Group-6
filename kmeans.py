@@ -1,7 +1,7 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import random
-import pandas as pd
+
+import numpy as np
+
 
 class Cluster:
 
@@ -90,7 +90,7 @@ class Cluster:
 
     def kmeans(self):
         self.get_centroid()  # find centroids
-        iterations = 100  # maximum iterations
+        iterations = 2000  # maximum iterations
         stop = True
         count = 0
         while (stop or iterations != count):
