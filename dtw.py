@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 
-def dynamicTimeWarping(directory,file):
+def dynamicTimeWarping(directory,file,mode):
     values={}
     base=fetchAQA(directory,file)
     compareKeys=glob.glob(directory+"/*.wrd")
@@ -28,14 +28,16 @@ def dynamicTimeWarping(directory,file):
             matrix[baseSize+1,compareSize+1]=DTWDist(base_cs,baseSize,compare_cs,compareSize,matrix,flag)
             values[key] += matrix[baseSize+1,compareSize+1]
     return values
-    rankings={k:v for k,v in sorted(values.items(),key=lambda x:x[1])}
-    output=list(rankings.items())
-    print()
-    print("---------------------------------")
-    print("      File      |  DTW Distance  ")
-    print("---------------------------------")
-    for i in range(10):
-        print(output[i][0].split('\\')[-1] + "\t|" + "\t" + str(output[i][1]))
+    
+    if mode == 1:
+        rankings={k:v for k,v in sorted(values.items(),key=lambda x:x[1])}
+        output=list(rankings.items())
+        print()
+        print("---------------------------------")
+        print("      File      |  DTW Distance  ")
+        print("---------------------------------")
+        for i in range(10):
+            print(output[i][0].split('\\')[-1] + "\t|" + "\t" + str(output[i][1]))
 
 def fetchAQA(directory,file):
     values=[]

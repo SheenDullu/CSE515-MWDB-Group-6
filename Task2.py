@@ -87,7 +87,7 @@ def main():
             editDistance(directory, gesture)
         elif task == 7:
             print("DTW")
-            dtw.dynamicTimeWarping(directory, gesture + '.wrd')
+            dtw.dynamicTimeWarping(directory, gesture + '.wrd',1)
         elif task == 0:
             print("Thank you.")
             break

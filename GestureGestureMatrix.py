@@ -25,7 +25,7 @@ def DTWMatrix(directory):
     keys = [key.replace(directory + "\\", "") for key in keys]
     matrix = np.empty([len(keys), len(keys)])
     for key1 in keys:
-        val = dtw.dynamicTimeWarping(directory,key1)
+        val = dtw.dynamicTimeWarping(directory,key1,0)
         distances=list(val.values())
         for key2 in keys:
             matrix[keys.index(key1), keys.index(key2)] = distances[keys.index(key2)]
