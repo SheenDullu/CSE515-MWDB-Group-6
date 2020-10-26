@@ -50,38 +50,35 @@ def task4c(directory):
 
     print(k)
 
-def task4d():
-    print("Enter [1] for dot product")
-    print("Enter [2] for PCA")
-    print("Enter [3] for SVD")
-    print("Enter [4] for NMF")
-    print("Enter [5] for LDA")
-    print("Enter [6] for edit distance")
-    print("Enter [7] for DTW")
-    gg=input("Which gesture-gesture matrix would you like to use: ")
-    k=input("How many clusters would you like to compute: ")
+def task4d(ggMatrix,k, gg):
+    # print("Enter [1] for dot product")
+    # print("Enter [2] for PCA")
+    # print("Enter [3] for SVD")
+    # print("Enter [4] for NMF")
+    # print("Enter [5] for LDA")
+    # print("Enter [6] for edit distance")
+    # print("Enter [7] for DTW")
+    # gg=input("Which gesture-gesture matrix would you like to use: ")
+    # k=input("How many clusters would you like to compute: ")
 
-    if(gg=="1"):
-        ggMatrix=pd.read_csv("dotProductMatrix.csv",index_col=[0])
-    elif(gg=="2"):
-        ggMatrix=pd.read_csv()
-    elif(gg=="3"):
-        ggMatrix=pd.read_csv()
-    elif(gg=="4"):
-        ggMatrix=pd.read_csv()
-    elif(gg=="5"):
-        ggMatrix=pd.read_csv()
-    elif(gg=="6"):
-        ggMatrix=pd.read_csv("editDistanceMatrix.csv",index_col=[0])
-    elif(gg=="7"):
-        ggMatrix=pd.read_csv("dtwDistanceMatrix.csv",index_col=[0])
+    # if(gg=="1"):
+    #     ggMatrix=pd.read_csv("dotProductMatrix.csv",index_col=[0])
+    # elif(gg=="2"):
+    #     ggMatrix=pd.read_csv()
+    # elif(gg=="3"):
+    #     ggMatrix=pd.read_csv()
+    # elif(gg=="4"):
+    #     ggMatrix=pd.read_csv()
+    # elif(gg=="5"):
+    #     ggMatrix=pd.read_csv()
+    # elif(gg=="6"):
+    #     ggMatrix=pd.read_csv("editDistanceMatrix.csv",index_col=[0])
+    # elif(gg=="7"):
+    #     ggMatrix=pd.read_csv("dtwDistanceMatrix.csv",index_col=[0])
 
     threshold(gg,ggMatrix)
-    # x = 0.5                                         # IMPLEMENT SEPARATE THRESHOLD FUNCTION
-    cols=list(ggMatrix.columns)                             #
-    # print(cols)
-    # for col in cols:                                        #
-    #     ggMatrix.loc[ggMatrix[col] > x, col] = 0    #
+
+    cols=list(ggMatrix.columns)
 
     dMatrix=pd.DataFrame(index=cols,columns=cols)
     dMatrix=dMatrix.fillna(0)
@@ -94,11 +91,8 @@ def task4d():
                 degree+=1
         dMatrix.loc[col,col] = degree
     
-    print(ggMatrix.shape)
-    print(dMatrix.shape)
     # lMatrix=dMatrix.subtract(ggMatrix)
     lMatrix=np.subtract(dMatrix,ggMatrix)
-    print(lMatrix.shape)
 
     L = lMatrix.to_numpy()
     eVectors = np.linalg.eig(L)
@@ -169,8 +163,8 @@ def main():
             ggMatrix, k = show()
             task4c(ggMatrix, k)
         elif task == 4:
-            ggMatrix, k = show()
-            task4d(ggMatrix, k)
+            ggMatrix, k, gg = show()
+            task4d(ggMatrix, k, gg)
 
 
 def show():
@@ -197,8 +191,9 @@ def show():
         ggMatrix = pd.read_csv("editDistanceMatrix.csv", index_col=[0])
     elif gg == "7":
         ggMatrix = pd.read_csv("dtwDistanceMatrix.csv", index_col=[0])
-    return ggMatrix, k
+    return ggMatrix, k, gg
 
 
 if __name__ == '__main__':
     main()
+
