@@ -98,24 +98,40 @@ def threshold(option,matrix):
     std=matrix.values.std(ddof=1)
 
     if(option=="1"):
-        threshold=max-std
+        threshold=min+std
         cols=list(matrix.columns)
         for col in cols:
             matrix.loc[matrix[col] < threshold, col] = 0
-    # elif(option=="2"):
-    # elif(option=="3"):
-    # elif(option=="4"):
-    # elif(option=="5"):
+    elif(option=="2"):
+        threshold=max-std
+        cols=list(matrix.columns)
+        for col in cols:
+            matrix.loc[matrix[col] < threshold, col] = 0  
+    elif(option=="3"):
+        threshold=max-std
+        cols=list(matrix.columns)
+        for col in cols:
+            matrix.loc[matrix[col] < threshold, col] = 0  
+    elif(option=="4"):
+        threshold=max-std
+        cols=list(matrix.columns)
+        for col in cols:
+            matrix.loc[matrix[col] < threshold, col] = 0  
+    elif(option=="5"):
+        threshold=max-std
+        cols=list(matrix.columns)
+        for col in cols:
+            matrix.loc[matrix[col] < threshold, col] = 0  
     elif(option=="6"):
         threshold=max-std
         cols=list(matrix.columns)
         for col in cols:
             matrix.loc[matrix[col] < threshold, col] = 0           
     elif(option=="7"):
-        threshold=min+std
+        threshold=max-std
         cols=list(matrix.columns)
         for col in cols:
-            matrix.loc[matrix[col] > threshold, col] = -1           # 0 is better in dtw so penalizing by setting values to -1 
+            matrix.loc[matrix[col] > threshold, col] = 0           # 0 is better in dtw so penalizing by setting values to -1 
 
 def main():
     while True:
