@@ -42,7 +42,7 @@ def DTWMatrix(directory):
         .combine_first(df)
     df_norm = 1 - df_norm
     df_norm.to_csv("dtwDistanceMatrix.csv")
-    return df
+    return df_norm
 
 
 def editDistance(directory):
