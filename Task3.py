@@ -94,8 +94,8 @@ def main():
             print("List of a Gesture Gesture Matrix:")
             print('Enter 1 for Dot Product\nEnter 2 for PCA\nEnter 3 for SVD')
             print('Enter 4 for NMF\nEnter 5 for LDA')
-            print('Enter 6 for Edit Distance\nEnter 7 for DT\nEnter 0 to exit: \n')
-            gesture_model = int(input("Select a Gesture Gesture Matrix:\n"))
+            print('Enter 6 for Edit Distance\nEnter 7 for DTW \n')
+            gesture_model = int(input("Select a Gesture Gesture Matrix (Enter 0 to exit)\n"))
             print("Creating Gesture-Gesture matrix")
             if gesture_model == 1:
                 gesture_gesture_matrix = dotProduct(directory)
