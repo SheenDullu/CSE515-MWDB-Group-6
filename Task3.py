@@ -9,7 +9,7 @@ import pandas as pd
 from sklearn.decomposition import NMF, TruncatedSVD
 
 import Utilities
-from GestureGestureMatrix import dotProduct, editDistance
+from GestureGestureMatrix import dotProduct, DTWMatrix
 
 
 def performSVD(gesture_gesture_matrix, p, directory):
@@ -100,11 +100,11 @@ def main():
             if gesture_model == 1:
                 gesture_gesture_matrix = dotProduct(directory)
             elif gesture_model == 6:
-                gesture_gesture_matrix = editDistance(directory)
-                # gesture_gesture_matrix = pd.read_csv('editDistanceMatrix.csv', index_col=0)
+                # gesture_gesture_matrix = editDistance(directory)
+                gesture_gesture_matrix = pd.read_csv('editDistanceMatrix.csv', index_col=0)
             elif gesture_model == 7:
-                # gesture_gesture_matrix = DTWMatrix(directory)
-                gesture_gesture_matrix = pd.read_csv('dtwDistanceMatrix.csv', index_col=0)
+                gesture_gesture_matrix = DTWMatrix(directory)
+                # gesture_gesture_matrix = pd.read_csv('dtwDistanceMatrix.csv', index_col=0)
             elif gesture_model == 2:
                 gesture_gesture_matrix = list()
                 old_data = pd.read_csv(os.path.join(directory, "latent_features_pca_task1.txt"), header=None)

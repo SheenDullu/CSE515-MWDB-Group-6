@@ -27,7 +27,7 @@ def dynamicTimeWarping(directory,file,mode):
             flag=0
             matrix[baseSize+1,compareSize+1]=DTWDist(base_cs,baseSize,compare_cs,compareSize,matrix,flag)
             values[key] += matrix[baseSize+1,compareSize+1]
-    return values
+
     
     if mode == 1:
         rankings={k:v for k,v in sorted(values.items(),key=lambda x:x[1])}
@@ -38,6 +38,7 @@ def dynamicTimeWarping(directory,file,mode):
         print("---------------------------------")
         for i in range(10):
             print(output[i][0].split('\\')[-1] + "\t|" + "\t" + str(output[i][1]))
+    return values
 
 def fetchAQA(directory,file):
     values=[]
