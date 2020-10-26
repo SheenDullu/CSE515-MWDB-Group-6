@@ -97,7 +97,7 @@ def similarity(old_data,new_data,all_files_objects):
     for i in range(10):
         a,b = heapq.heappop(heap)
         similar_objects.append((b,a))
-    print(similar_objects)
+        print(b,",",a)
     print("--------------")
 
 

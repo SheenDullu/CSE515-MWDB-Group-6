@@ -24,7 +24,8 @@ def degree_of_membership(model,datadir):
             bins[c].append(b)
         else:
             bins[c].append(b)
-    print(bins)
+    for i in bins:
+        print(i,": ", bins[i])
 
 def main():
     bins = dict()
