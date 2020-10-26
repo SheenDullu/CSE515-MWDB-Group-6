@@ -53,7 +53,7 @@ class Cluster:
                 if (min_distance > dist):
                     min_distance = dist
                     min_k = index_k
-            #if (self.points[index_point] not in self.centroids):
+
             self.cluster[min_k + 1].append(self.points[index_point])  # Append datapoint with min distance to centroid
 
     def initial_cluster(self):
@@ -84,9 +84,11 @@ class Cluster:
             self.cluster_obj[k]=[]
 
             for f in range(len(self.cluster[k])):
-                if(len(np.where(np.all(self.points==self.cluster[k][f],axis=1))[0].flatten())!=0):
+                num=np.where(np.all(self.points==self.cluster[k][f],axis=1))[0].flatten()
+                for i in range(len(num)):
 
-                    self.cluster_obj[k].append(np.where(np.all(self.points==self.cluster[k][f],axis=1))[0].flatten()[0])
+                    if(num[i] not in self.cluster_obj[k]):
+                        self.cluster_obj[k].append(num[i])
 
     def kmeans(self):
         self.get_centroid()  # find centroids
