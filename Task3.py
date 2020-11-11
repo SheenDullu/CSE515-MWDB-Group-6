@@ -98,7 +98,8 @@ def main():
             gesture_model = int(input("Select a Gesture Gesture Matrix (Enter 0 to exit)\n"))
             print("Creating Gesture-Gesture matrix")
             if gesture_model == 1:
-                gesture_gesture_matrix = dotProduct(directory)
+                vector_model = input("Enter the 1 for TF and 2 for TF-IDF")
+                gesture_gesture_matrix = dotProduct(directory,vector_model)
             elif gesture_model == 6:
                 # gesture_gesture_matrix = editDistance(directory)
                 gesture_gesture_matrix = pd.read_csv('editDistanceMatrix.csv', index_col=0)

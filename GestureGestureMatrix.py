@@ -8,8 +8,11 @@ import Utilities
 import dtw
 
 
-def dotProduct(directory):
-    all_vectors = pd.DataFrame.from_dict(Utilities.getAllVectors(directory, 'tf'), orient='index')
+def dotProduct(directory,vector_model):
+    if vector_model == '1':
+        all_vectors = pd.DataFrame.from_dict(Utilities.getAllVectors(directory, 'tf'), orient='index')
+    elif vector_model == '2':
+        all_vectors = pd.DataFrame.from_dict(Utilities.getAllVectors(directory, 'tfidf'), orient='index')
     df = all_vectors.dot(all_vectors.T)
     df_norm = df.subtract(df.min(axis=1), axis=0) \
         .divide(df.max(axis=1) - df.min(axis=1), axis=0) \
