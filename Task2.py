@@ -11,7 +11,7 @@ import task2_pinaki
 def printTop10Values(similarity_measure):
     i = 1
     for index, row in similarity_measure.iteritems():
-        print(i, '. Gesture ', index.split(".")[0].split('_')[-1], ", ", row)
+        print(i, '. Gesture ', index.split(".")[0].split('_')[-1], ", ", 1/(1+row))
         i = i + 1
 
 
@@ -53,7 +53,7 @@ def editDistance(directory, file):
     vals = sorted(range(len(editValues)), key=lambda k: editValues[k])
 
     for i in range(0, 11):
-        print(str(i+1) + " . Gesture " + all_files[vals[i]].split("\\")[-1].split(".")[0] + " , " + str(editValues[vals[i]]))
+        print(str(i+1) + " . Gesture " + all_files[vals[i]].split("\\")[-1].split(".")[0] + " , " + str(1/(1+editValues[vals[i]])))
 
 
 def main():

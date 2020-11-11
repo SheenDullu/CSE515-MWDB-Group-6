@@ -34,10 +34,10 @@ def dynamicTimeWarping(directory,file,mode):
         output=list(rankings.items())
         print()
         print("---------------------------------")
-        print("      File      |  DTW Distance  ")
+        print("      File      |  DTW Score  ")
         print("---------------------------------")
         for i in range(10):
-            print(output[i][0].split('\\')[-1] + "\t|" + "\t" + str(output[i][1]))
+            print(output[i][0].split('\\')[-1] + "\t|" + "\t" + str(1/(1+output[i][1])))
     return values
 
 def fetchAQA(directory,file):

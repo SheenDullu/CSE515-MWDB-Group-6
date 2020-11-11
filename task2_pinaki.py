@@ -93,7 +93,7 @@ def similarity(old_data,new_data,all_files_objects):
         similar_objects.append((b,a))
     i = 1
     for val in similar_objects:
-        print(str(i) + ". " + str(val[0]) + " " + str(val[1]))
+        print(str(i) + ". " + str(val[0]) + " " + str(1/(1+val[1])))
         i = i + 1
     # print(similar_objects)
     print("--------------")
