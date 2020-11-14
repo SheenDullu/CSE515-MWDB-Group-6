@@ -8,7 +8,7 @@ Multimedia Gesture Recognition
 •	The directory dir for the data will have .csv files with multi-variate time-series data.
 
 •	 The directory *dir* will be the location along with folder name. For example, the Folder Z has all the gesture files, 
-so *dir* will be *<folder_path…\Z>*. In my case, *dir* input was *D:\ASU\Courses\MWDB\Project\Code\Z*
+so *dir* will be *<folder_path…>*. In my case, *dir* input was *D:\ASU\Courses\MWDB\Project\Code*
 
 
 The System should be installed with Python 3.7.7.
